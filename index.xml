@@ -20,11 +20,11 @@
 
 &lt;hr /&gt;
 
-&lt;p&gt;This is part 1 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
+&lt;p&gt;This is part 2 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;#&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://example.org/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;hr /&gt;
@@ -233,8 +233,10 @@ functions:
 
 &lt;p&gt;This is part 1 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
 
-&lt;p&gt;[Part 1: Case Study and Grooming]()
-[Part 2: Simple API Endpoints with Serverless and Lambda]()&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://example.org/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;hr /&gt;
 
