@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Mike Tobias</title>
+    <link>http://example.org/posts/</link>
+    <description>Recent content in Posts on Mike Tobias</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 16 Apr 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Simple API Endpoints with Serverless and Lambda</title>
+      <link>http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/</link>
+      <pubDate>Tue, 16 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/</guid>
+      <description>Simple API Endpoints with Serverless and Lambda This is part 1 of the series. Feel free to skip around to other sections using the links below.
+ Case Study and Grooming Simple API Endpoints with Serverless and Lambda  Objective Our objective in this segment is to create an API endpoint attached to a Lambda function which will handle vote submissions, adding each vote to an SQS Message Queue to be processed at a later time.</description>
+    </item>
+    
+    <item>
+      <title>Netflix Voting Service - Case Study</title>
+      <link>http://example.org/posts/aws-sqs-microservice-pipeline/</link>
+      <pubDate>Thu, 11 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/posts/aws-sqs-microservice-pipeline/</guid>
+      <description>Netflix Voting Service - Case Study This is part 1 of the series. Feel free to skip around to other sections using the links below.
+[Part 1: Case Study and Grooming]() [Part 2: Simple API Endpoints with Serverless and Lambda]()
+Case Study We are working at Netflix. Yep, you and me both. Our company, Netflix, has recently implemented their voting functionality where users can vote on different aspects of the show or movie they just watched.</description>
+    </item>
+    
+  </channel>
+</rss>

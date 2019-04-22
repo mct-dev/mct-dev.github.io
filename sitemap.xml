@@ -1,0 +1,92 @@
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+    <url>
+      <loc>http://example.org/categories/aws/</loc>
+      
+      <lastmod>2019-04-16T00:00:00+00:00</lastmod>
+      
+      
+      
+      <priority>0</priority>
+      
+      
+    </url>
+  
+    <url>
+      <loc>http://example.org/categories/</loc>
+      
+      <lastmod>2019-04-16T00:00:00+00:00</lastmod>
+      
+      
+      
+      <priority>0</priority>
+      
+      
+    </url>
+  
+    <url>
+      <loc>http://example.org/</loc>
+      
+      <lastmod>2019-04-16T00:00:00+00:00</lastmod>
+      
+      
+      
+      <priority>0</priority>
+      
+      
+    </url>
+  
+    <url>
+      <loc>http://example.org/posts/</loc>
+      
+      <lastmod>2019-04-16T00:00:00+00:00</lastmod>
+      
+      
+      
+      <priority>0</priority>
+      
+      
+    </url>
+  
+    <url>
+      <loc>http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/</loc>
+      
+      <lastmod>2019-04-16T00:00:00+00:00</lastmod>
+      
+      
+      
+      
+    </url>
+  
+    <url>
+      <loc>http://example.org/posts/aws-sqs-microservice-pipeline/</loc>
+      
+      <lastmod>2019-04-11T00:00:00+00:00</lastmod>
+      
+      
+      
+      
+    </url>
+  
+    <url>
+      <loc>http://example.org/about/</loc>
+      
+      
+      
+      <priority>0</priority>
+      
+      
+    </url>
+  
+    <url>
+      <loc>http://example.org/tags/</loc>
+      
+      
+      
+      <priority>0</priority>
+      
+      
+    </url>
+  
+</urlset>

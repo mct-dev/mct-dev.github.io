@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noodp"/>
+  
+  
+  
+  
+  
+  
+  <link rel="next" href="http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/" />
+  <link rel="canonical" href="http://example.org/posts/aws-sqs-microservice-pipeline/" />
+  <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+  <title>
+       
+       
+           Netflix Voting Service - Case Study | Mike Tobias
+       
+  </title>
+  <meta name="title" content="Netflix Voting Service - Case Study | Mike Tobias">
+    
+  
+  <link rel="stylesheet" href="/font/iconfont.css">
+  <link rel="stylesheet" href="/css/main.min.css">
+
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Netflix Voting Service - Case Study"/>
+<meta name="twitter:description" content="Building a voting service to solve a fictitious enterprise problem."/>
+
+  <script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Netflix Voting Service - Case Study",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http:\/\/example.org\/posts\/aws-sqs-microservice-pipeline\/"
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "http:\/\/example.org\/cover.png",
+    "width":  800 ,
+    "height":  600 
+  },
+  "genre": "posts",
+  
+  "wordcount":  570 ,
+  "url": "http:\/\/example.org\/posts\/aws-sqs-microservice-pipeline\/",
+  "datePublished": "2019-04-11T00:00:00\x2b00:00",
+  "dateModified": "2019-04-11T00:00:00\x2b00:00",
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Mike Tobias",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http:\/\/example.org\/logo.png",
+      "width":  127 ,
+      "height":  40 
+    }
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Mike Tobias"
+  },
+  "description": "Building a voting service to solve a fictitious enterprise problem."
+}
+</script>
+</head>
+
+  
+
+
+  <body class="">
+    <div class="wrapper">
+        <nav class="navbar">
+    <div class="container">
+        <div class="navbar-header header-logo">
+        	<a href="http://example.org/">Mike Tobias</a>
+        </div>
+        <div class="menu navbar-right">
+                
+                
+                <a class="menu-item" href="/" title="">Home</a>
+                
+                <a class="menu-item" href="/posts/" title="">Blog</a>
+                
+                <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;
+        </div>
+    </div>
+</nav>
+<nav class="navbar-mobile" id="nav-mobile" style="display: none">
+     <div class="container">
+        <div class="navbar-header">
+            <div>  <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;<a href="http://example.org/">Mike Tobias</a></div>
+            <div class="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+     
+          <div class="menu" id="mobile-menu">
+                
+                
+                <a class="menu-item" href="/" title="">Home</a>
+                
+                <a class="menu-item" href="/posts/" title="">Blog</a>
+                
+        </div>
+    </div>
+</nav>
+    	 <main class="main">
+          <div class="container">
+      		
+<article class="post-warp">
+    <header class="post-header">
+        <h1 class="post-title">Netflix Voting Service - Case Study</h1>
+        <div class="post-meta">
+            Written by <a href="http://example.org/" rel="author">Mike Tobias</a>
+                <span class="post-time">
+                    on <time datetime=2019-04-11 >11 April 2019</time>
+                </span>
+                <br />
+                
+                <i class="iconfont icon-folder"></i>
+                <span class="post-category">
+                        <a href="http://example.org/categories/aws/"> AWS </a>
+                        
+                </span>
+                <br />
+                <i class="iconfont icon-timer"></i>
+                3 min read
+        </div>
+    </header>
+    <div class="post-content">
+        
+
+        
+
+        
+        
+     
+          
+          
+          
+
+          
+          
+          
+
+          
+
+<h1 id="netflix-voting-service-case-study">Netflix Voting Service - Case Study</h1>
+
+<hr />
+
+<p>This is part 1 of the series.  Feel free to skip around to other sections using the links below.</p>
+
+<p>[Part 1: Case Study and Grooming]()
+[Part 2: Simple API Endpoints with Serverless and Lambda]()</p>
+
+<hr />
+
+<h2 id="case-study">Case Study</h2>
+
+<p>We are working at Netflix.  Yep, you and me both.  Our company, Netflix, has recently implemented their voting functionality where users can vote on different aspects of the show or movie they just watched.  We have been tasked with creating a pipeline which can receive and process an extremely large number of these votes in the most efficient, scalable, and cost effective way possible.</p>
+
+<h2 id="grooming">Grooming</h2>
+
+<p>In this scenario, we can assume that the data will be passed from the front end as JSON.  The JSON will have a particular structure and we will have to provide a URL endpoint where the JSON can be sent.  Since the quantity of votes received per second or minute may change dramatically based on time of day or any number of other factors, we likely do not want to have a powerful server running all the time waiting to collect these votes.  This seems like an ideal situation for an <a href="https://aws.amazon.com/api-gateway/">AWS API Gateway</a> connected to 1 or more serverless <a href="https://aws.amazon.com/lambda/">Lambda</a> functions.</p>
+
+<p>We could probably use just 1 Lambda function to receive the data, verify and sanitize it, and then post it to our database, but that seems like a little bit much for just 1 little function.  We should probably have more than 1 function, each with a very specific job.  For this scenario, let&rsquo;s go with 1 function to receive the data, 1 to process the data, and 1 to add it to our database.</p>
+
+<p>Since we may end up with an extremely high volume of calls to our API - think thousands of requests per second - it would be a good idea for us to &ldquo;decouple&rdquo; our pipeline.  We&rsquo;ll achieve this by using <a href="https://aws.amazon.com/sqs/">AWS SQS</a> as a message queue service in between our very first &ldquo;receiver&rdquo; function and the rest of our serverless pipeline.  SQS will allow us to store a queue of messages which contain the data submitted through the API endpoint.  Then, later on, we can ask this queue for messages to process.  The key here is that we don&rsquo;t have to <em>immediately</em> process and store the data from the API request.  We can add it to the queue, then process items from the queue in a more leisurely fashion.  This &ldquo;decoupling&rdquo; of our pipeline will help reduce the stress on our database and also helps keep our pipeline scalable and manageable.</p>
+
+<p>For this scenario, we will use <a href="https://aws.amazon.com/dynamodb/">Dynamo DB</a> because it is flexible, cost-efficient, and highly scalable. It also has the added benefit of very smooth interoperability with Lambda and other AWS services.</p>
+
+<p>So, in summary, our project should include:</p>
+
+<ul>
+<li>An API endpoint (1 or more) for a front end to send vote data to.</li>
+<li>A Lambda function which will collect the data from this API endpoint and add it to&hellip;</li>
+<li>…an SQS message queue.</li>
+<li>1 or more Lambda functions which will periodically ask the SQS message queue if there are any messages to process and, if so, process these messages (votes) and add them to&hellip;</li>
+<li>…a Dynamo DB table.</li>
+</ul>
+
+<p>Let&rsquo;s get started!  The [next post]() in this series will go over the first segment of our pipeline: the API gateway and the initial Lambda function.</p>
+
+    </div>
+
+    
+
+  
+    <div class="post-tags">
+        
+        <section>
+                <a href="javascript:window.history.back();">Back</a></span> · 
+                <span><a href="http://example.org/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+         
+        
+        <a href="http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/" class="next" rel="next" title="Simple API Endpoints with Serverless and Lambda">Simple API Endpoints with Serverless and Lambda&nbsp;<i class="iconfont icon-xiaojiantou"></i></a>
+        
+    </div>
+
+    <div class="post-comment">
+          
+          
+          
+    </div>
+</article>
+          </div>
+		   </main>
+      <footer class="footer">
+    <div class="copyright">
+        &copy;
+        
+         
+            <span class="author" itemprop="copyrightHolder"><a href="http://example.org/">Mike Tobias</a></span>
+         
+
+		  
+    </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    <script src="/js/vendor_no_gallery.min.js" async=""></script>
+    
+  
+
+
+
+
+
+
+
+     </div>
+  </body>
+</html>

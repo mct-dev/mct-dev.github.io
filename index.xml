@@ -1,0 +1,282 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mike Tobias on Mike Tobias</title>
+    <link>http://example.org/</link>
+    <description>Recent content in Mike Tobias on Mike Tobias</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 16 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Simple API Endpoints with Serverless and Lambda</title>
+      <link>http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/</link>
+      <pubDate>Tue, 16 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/</guid>
+      <description>
+
+&lt;h1 id=&#34;simple-api-endpoints-with-serverless-and-lambda&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/h1&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;This is part 1 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;#&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;objective&#34;&gt;Objective&lt;/h2&gt;
+
+&lt;p&gt;Our objective in this segment is to create an API endpoint attached to a Lambda function which will handle vote submissions, adding each vote to an SQS Message Queue to be processed at a later time.  This is the first part of our voting pipeline, an application that we&amp;rsquo;re designing as part of a fictitious case study.  See [part 1]() of this series for more info on that.&lt;/p&gt;
+
+&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+
+&lt;p&gt;We&amp;rsquo;ll be using the &lt;a href=&#34;https://serverless.com/framework/&#34;&gt;Serverless Framework&lt;/a&gt; to build our &amp;ldquo;back-end&amp;rdquo; functions and API endpoints.  This framework is platform-agnostic, meaning we don&amp;rsquo;t &lt;em&gt;have&lt;/em&gt; to use AWS as our cloud platform.  We could use other providers as well!  The serverless functions are also a great choice here because they are efficient, cost-effective, and extremely scalable.&lt;/p&gt;
+
+&lt;p&gt;Also, if you&amp;rsquo;re unfamiliar with any of the subjects discussed in this post, I&amp;rsquo;d very much encourage you to read through some of the online documentation available for them.  Maybe do some googling or run through some of the &amp;ldquo;Getting Started&amp;rdquo; sections.  There&amp;rsquo;s quite a bit of information out there, but here&amp;rsquo;s some links that might be helpful:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.aws.amazon.com/lambda/latest/dg/welcome.html&#34;&gt;Lambda Developer Docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.aws.amazon.com/lambda/latest/dg/programming-model.html&#34;&gt;Building Lambda functions with Nodejs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://aws.amazon.com/sdk-for-node-js/&#34;&gt;The AWS SDK for Nodejs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://aws.amazon.com/sqs/&#34;&gt;Amazon Simple Queue Service (SQS)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://serverless.com/framework/docs/&#34;&gt;The Serverless Framework (Docs)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;serverless-framework-getting-started&#34;&gt;Serverless Framework - Getting Started&lt;/h2&gt;
+
+&lt;p&gt;First, we&amp;rsquo;ll install the Serverless Framework.  There&amp;rsquo;s some great directions on how you can do that &lt;a href=&#34;https://serverless.com/framework/docs/getting-started/&#34;&gt;here&lt;/a&gt;, but essentially all you&amp;rsquo;ll be doing is running &lt;code&gt;npm install -g serverless&lt;/code&gt;.  This will install the cli tools for the framework, accessible through the &lt;code&gt;sls&lt;/code&gt; or &lt;code&gt;serverless&lt;/code&gt; commands.&lt;/p&gt;
+
+&lt;p&gt;Now we can initialize a new project directory and create our serverless functions.  First, create a root project directory for yourself.  Mine will be &lt;code&gt;~/projects/voting-service/&lt;/code&gt;. I also chose to add a subdirectory in this root folder called &lt;code&gt;serverless-functions&lt;/code&gt;, just to keep the serverless portion of this service separated.  I&amp;rsquo;ll use this location to store all of my Lambda functions for the project.  So, let&amp;rsquo;s &lt;code&gt;cd&lt;/code&gt; into this directory and run the below command.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sls create —template aws-nodejs —path voting-service&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;This command will create all of the necessary files for your serverless function, using a Node.js template.  Let&amp;rsquo;s open the &lt;code&gt;handler.js&lt;/code&gt; file (full path: &lt;code&gt;~/projects/voting-service/serverless-functions/voting-service/handler.js&lt;/code&gt;). This file contains some boilerplate code for a Node.js lambda function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// handler.js
+&#39;use strict&#39;;
+
+module.exports.hello = async (event) =&amp;gt; {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: &#39;Go Serverless v1.0! Your function executed successfully!&#39;,
+      input: event,
+    }),
+  };
+
+  // Use this code if you don&#39;t use the http event with the LAMBDA-PROXY integration
+  // return { message: &#39;Go Serverless v1.0! Your function executed successfully!&#39;, event };
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We can deploy this function immediately, if we wanted to!  Just &lt;code&gt;cd&lt;/code&gt; into this directory - the &lt;code&gt;…/voting-service/&lt;/code&gt; directory - and run &lt;code&gt;sls deploy&lt;/code&gt;.  This will create a CloudFormation template and run it in AWS, which you can see in the AWS Management Console.  Then, to get rid of &lt;em&gt;everything&lt;/em&gt; that this deploy command did, you can either run &lt;code&gt;sls remove&lt;/code&gt; or you can open the CloudFormation stack in AWS and delete the stack manually.&lt;/p&gt;
+
+&lt;p&gt;This intro template from &lt;code&gt;serverless&lt;/code&gt; would only be this single Lambda function and nothing else.  What we need is a function that handles data and adds it to a SQS queue and an API endpoint to send our voting data to.  Let&amp;rsquo;s add those things now.&lt;/p&gt;
+
+&lt;h2 id=&#34;add-an-api-endpoint&#34;&gt;Add an API Endpoint&lt;/h2&gt;
+
+&lt;p&gt;The main benefit of using the Serverless Framework comes from the &lt;code&gt;serverless.yml&lt;/code&gt; file.  This file defines not only your serverless functions, but any other services and rules related to these functions.  There is quite a bit of documentation on this file (and other parts of the framework), which you can find &lt;a href=&#34;https://serverless.com/framework/docs/&#34;&gt;here&lt;/a&gt;. To add an API endpoint, all it takes is to update our &lt;code&gt;serverless.yml&lt;/code&gt; file to contain the right bits of information.  Here&amp;rsquo;s the final result:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;# serverless.yml
+service: voting-service
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs8.10
+  stage: dev
+
+
+functions:
+  post-vote:
+    handler: post-vote.postVote
+    events:
+      - http:
+          path: vote
+          method: post
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In short, what we do here is:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Define our service name (at the top)&lt;/li&gt;
+&lt;li&gt;Define the provider information we&amp;rsquo;d like to use.  In our case, we&amp;rsquo;re using AWS in the us-east-1 region, the runtime for our function will be nodejs, and we&amp;rsquo;d like to set our deployment stage as &lt;code&gt;dev&lt;/code&gt; for the moment.&lt;/li&gt;
+&lt;li&gt;Define our functions.  We set the first function name to &lt;code&gt;post-vote&lt;/code&gt; and point out that the handler (the actual function) can be found in the &lt;code&gt;post-vote&lt;/code&gt; file at the &lt;code&gt;postVote&lt;/code&gt; function (&lt;code&gt;&amp;lt;file&amp;gt;.&amp;lt;function name&amp;gt;&lt;/code&gt;). Yes, these names are currently wrong.  We&amp;rsquo;ll update them.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Define the Events associated with this function&lt;/strong&gt;.  This is where we set up our API endpoint.  You can also set up many other types of events here which will trigger your Lambda function.  Check out all the event options &lt;a href=&#34;https://serverless.com/framework/docs/providers/aws/events/&#34;&gt;here&lt;/a&gt;.
+
+&lt;ul&gt;
+&lt;li&gt;We define the endpoint as HTTP POST, with a url path of &lt;code&gt;/vote/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You&amp;rsquo;ll notice that the names of the file and function in our &lt;code&gt;.yml&lt;/code&gt; file don&amp;rsquo;t match up at the moment.  The &lt;code&gt;postVote&lt;/code&gt; function does not currently exist, and neither does the &lt;code&gt;post-vote&lt;/code&gt; file.  Currently, the &lt;code&gt;serverless.yml&lt;/code&gt; file would have to show &lt;code&gt;handler.hello&lt;/code&gt; for our function to work properly.  Let&amp;rsquo;s update that &lt;code&gt;.js&lt;/code&gt; file now before we test and deploy this API endpoint.  We&amp;rsquo;ll change the names of the file and function and update the code within.&lt;/p&gt;
+
+&lt;h2 id=&#34;building-our-serverless-function&#34;&gt;Building our Serverless Function&lt;/h2&gt;
+
+&lt;p&gt;First, a quick update of the file name.  We&amp;rsquo;ll name the file &lt;code&gt;post-vote.js&lt;/code&gt; and update the function name to &lt;code&gt;postVote&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// hanlder.js --&amp;gt; post-vote.js
+&#39;use strict&#39;;
+
+module.exports.postVote = async (event) =&amp;gt; {
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ok, now let&amp;rsquo;s throw some useful code in this file.  Currently, our function simply accepts the &lt;code&gt;event&lt;/code&gt; object provided by the API endpoint and returns an object with a &lt;code&gt;200&lt;/code&gt; status code and a &lt;code&gt;body&lt;/code&gt; property containing a simple message and the &lt;code&gt;event&lt;/code&gt; object.  Let&amp;rsquo;s update this so that, instead, we collect our voting data from the &lt;code&gt;event&lt;/code&gt; parameter and add this voting data to a specific SQS queue.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// post-vote.js
+&#39;use strict&#39;;
+const AWS = require(&#39;aws-sdk&#39;);
+
+AWS.config.update({region: &#39;us-east-1&#39;});
+
+module.exports.postVote = async (event, context) =&amp;gt; {
+  let sqs = new AWS.SQS({apiVersion: &#39;2012-11-05&#39;});
+  let voteQueueUrl;
+  let sqsMessageResponse;
+
+  try {
+    voteQueueUrl = await sqs.getQueueUrl({
+        QueueName: &#39;voting-app-queue&#39;,
+    }).promise();
+    sqsMessageResponse = await sqs.sendMessage({
+      MessageBody: JSON.stringify(event),
+      QueueUrl: voteQueueUrl.QueueUrl
+    }).promise()
+  }
+  catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify(err)
+    }
+  }
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      voteQueueUrl,
+      sqsMessageResponse,
+      input: event,
+    }),
+  };
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A couple of things to go over here.  First, the AWS SDK is made available in Lambda to any programming language that needs it.  In Nodejs, this is the &lt;code&gt;aws-sdk&lt;/code&gt; package.  This package allows us to access other AWS services, in this case the SQS service.  Also, when using the AWS SDK, we always want to specify the region we&amp;rsquo;re working in as well as a specific API version for the service that we use.  We&amp;rsquo;ve done that here near the top of the file.  Let&amp;rsquo;s go over the code in a bit more detail.&lt;/p&gt;
+
+&lt;p&gt;We first create a new &lt;code&gt;AWS.SQS&lt;/code&gt; object, specifying its most recent API version.  Then, we collect the &lt;code&gt;QueueUrl&lt;/code&gt; for a SQS Queue named &lt;code&gt;voting-app-queue&lt;/code&gt;.  This is a SQS queue that I&amp;rsquo;ve created directly through the AWS management console.  You can use the AWS SDK to create a queue, but we don&amp;rsquo;t necessarily need to programmatically create a queue in this scenario, so I just created one by hand.  Once we have this URL, we can add messages to our queue!  So, the next step (&lt;code&gt;sqs.sendMessage&lt;/code&gt;) sends a message to our QueueUrl adding the &lt;code&gt;event&lt;/code&gt; as the MessageBody.&lt;/p&gt;
+
+&lt;p&gt;Another cool thing to point out here is the &lt;code&gt;async&lt;/code&gt; / &lt;code&gt;await&lt;/code&gt; syntax.  Lambda supports more recent versions of Nodejs, which allows us to use this syntax to handle promises.  This makes our code much cleaner, avoiding lots of callbacks and such, especially while dealing with the AWS SDK - most things in there will be asynchronous calls, and can be made into a Nodejs &lt;code&gt;Promise&lt;/code&gt; by calling the &lt;a href=&#34;https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html#promise-property&#34;&gt;&lt;code&gt;.promise()&lt;/code&gt;&lt;/a&gt; function on the &lt;a href=&#34;https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html&#34;&gt;&lt;code&gt;AWS Request&lt;/code&gt;&lt;/a&gt; object (returned by &lt;code&gt;getQueueUrl&lt;/code&gt; and &lt;code&gt;sendMessage&lt;/code&gt; in our case).&lt;/p&gt;
+
+&lt;p&gt;This function is also associated with an API endpoint, so we want to make sure we return something to that API call.  In this case, if something goes wrong while dealing with our SQS service, we&amp;rsquo;ll return a &lt;code&gt;500&lt;/code&gt; error code (&amp;ldquo;Internal Server Error&amp;rdquo;) as well as the error details.  We could probably also add some more checks in this function to verify the data, returning different error codes if needed, but for now this will do just fine.  If all goes well in our function, we&amp;rsquo;ll have successfully added a message to the SQS queue and we return a &lt;code&gt;200&lt;/code&gt; status and some information about our queue and the message we sent.&lt;/p&gt;
+
+&lt;h2 id=&#34;permissions&#34;&gt;Permissions&lt;/h2&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve worked in AWS before, you&amp;rsquo;ll know that we need to set up some permissions here. Our Lambda function will have a couple of permissions by default - logging to CloudWatch, for example - but it won&amp;rsquo;t have the ability to do things in SQS unless we explicitly give those permissions to it.  This is done through &amp;ldquo;Roles&amp;rdquo; in AWS.&lt;/p&gt;
+
+&lt;p&gt;With the Serverless framework, we can set up a role within our code.  This makes management of the service as a whole much easier.  To do this, we&amp;rsquo;ll open up the &lt;code&gt;serverless.yml&lt;/code&gt; file again and make a minor change.  Here&amp;rsquo;s the result:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;# serverless.yml
+service: voting-app
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: &amp;quot;Allow&amp;quot;
+      Action:
+        - sqs:*
+      Resource: &amp;quot;*&amp;quot;
+
+functions:
+  post-vote:
+    handler: post-vote.postVote
+    events:
+      - http:
+          path: vote
+          method: post
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With the &lt;code&gt;iamRoleStatements&lt;/code&gt; section, we are able to define the AWS Roles that we want our functions to assume.  Here we&amp;rsquo;ve added a role which allows our function to take &lt;em&gt;any&lt;/em&gt; action on &lt;em&gt;any&lt;/em&gt; SQS resource.  You can check &lt;a href=&#34;https://serverless.com/framework/docs/providers/aws/guide/iam/&#34;&gt;here&lt;/a&gt; for more information on how to set up roles in the Serverless Framework.&lt;/p&gt;
+
+&lt;h2 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h2&gt;
+
+&lt;p&gt;That pretty much does it for this bit of our pipeline.  We can test our function locally by installing the AWS SDK into our local project with &lt;code&gt;npm i aws-sdk&lt;/code&gt; and then running &lt;code&gt;sls invoke local —function post-vote —data &amp;lt;insert data string&amp;gt;&lt;/code&gt;.  Here&amp;rsquo;s an example that I ran locally:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://example.org/images/blog/2019-04-17_sls-invoke-local.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The returned string of JSON doesn&amp;rsquo;t look pretty, but it does show that the function is working properly.  If you had trouble running this locally, you&amp;rsquo;ll likely have to &lt;a href=&#34;https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html&#34;&gt;configure your aws cli&lt;/a&gt; so that the AWS SDK we&amp;rsquo;re using can access your AWS resources.&lt;/p&gt;
+
+&lt;p&gt;We can now run &lt;code&gt;sls deploy&lt;/code&gt; within our &lt;code&gt;/serverless-functions/voting-service/&lt;/code&gt; directory and it will deploy everything that we need into AWS, permissions and all!  Then, if we want to remove all of these resources in AWS we can simply run &lt;code&gt;sls remove&lt;/code&gt; in the same directory.  Simple.&lt;/p&gt;
+
+&lt;p&gt;The next step in our service will be another serverless function which checks our SQS queue for messages and handles these messages appropriately.  We&amp;rsquo;ll build this bit in &lt;a href=&#34;#&#34;&gt;the next post of this series&lt;/a&gt;.  See you there!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Netflix Voting Service - Case Study</title>
+      <link>http://example.org/posts/aws-sqs-microservice-pipeline/</link>
+      <pubDate>Thu, 11 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/posts/aws-sqs-microservice-pipeline/</guid>
+      <description>
+
+&lt;h1 id=&#34;netflix-voting-service-case-study&#34;&gt;Netflix Voting Service - Case Study&lt;/h1&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;This is part 1 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
+
+&lt;p&gt;[Part 1: Case Study and Grooming]()
+[Part 2: Simple API Endpoints with Serverless and Lambda]()&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;case-study&#34;&gt;Case Study&lt;/h2&gt;
+
+&lt;p&gt;We are working at Netflix.  Yep, you and me both.  Our company, Netflix, has recently implemented their voting functionality where users can vote on different aspects of the show or movie they just watched.  We have been tasked with creating a pipeline which can receive and process an extremely large number of these votes in the most efficient, scalable, and cost effective way possible.&lt;/p&gt;
+
+&lt;h2 id=&#34;grooming&#34;&gt;Grooming&lt;/h2&gt;
+
+&lt;p&gt;In this scenario, we can assume that the data will be passed from the front end as JSON.  The JSON will have a particular structure and we will have to provide a URL endpoint where the JSON can be sent.  Since the quantity of votes received per second or minute may change dramatically based on time of day or any number of other factors, we likely do not want to have a powerful server running all the time waiting to collect these votes.  This seems like an ideal situation for an &lt;a href=&#34;https://aws.amazon.com/api-gateway/&#34;&gt;AWS API Gateway&lt;/a&gt; connected to 1 or more serverless &lt;a href=&#34;https://aws.amazon.com/lambda/&#34;&gt;Lambda&lt;/a&gt; functions.&lt;/p&gt;
+
+&lt;p&gt;We could probably use just 1 Lambda function to receive the data, verify and sanitize it, and then post it to our database, but that seems like a little bit much for just 1 little function.  We should probably have more than 1 function, each with a very specific job.  For this scenario, let&amp;rsquo;s go with 1 function to receive the data, 1 to process the data, and 1 to add it to our database.&lt;/p&gt;
+
+&lt;p&gt;Since we may end up with an extremely high volume of calls to our API - think thousands of requests per second - it would be a good idea for us to &amp;ldquo;decouple&amp;rdquo; our pipeline.  We&amp;rsquo;ll achieve this by using &lt;a href=&#34;https://aws.amazon.com/sqs/&#34;&gt;AWS SQS&lt;/a&gt; as a message queue service in between our very first &amp;ldquo;receiver&amp;rdquo; function and the rest of our serverless pipeline.  SQS will allow us to store a queue of messages which contain the data submitted through the API endpoint.  Then, later on, we can ask this queue for messages to process.  The key here is that we don&amp;rsquo;t have to &lt;em&gt;immediately&lt;/em&gt; process and store the data from the API request.  We can add it to the queue, then process items from the queue in a more leisurely fashion.  This &amp;ldquo;decoupling&amp;rdquo; of our pipeline will help reduce the stress on our database and also helps keep our pipeline scalable and manageable.&lt;/p&gt;
+
+&lt;p&gt;For this scenario, we will use &lt;a href=&#34;https://aws.amazon.com/dynamodb/&#34;&gt;Dynamo DB&lt;/a&gt; because it is flexible, cost-efficient, and highly scalable. It also has the added benefit of very smooth interoperability with Lambda and other AWS services.&lt;/p&gt;
+
+&lt;p&gt;So, in summary, our project should include:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;An API endpoint (1 or more) for a front end to send vote data to.&lt;/li&gt;
+&lt;li&gt;A Lambda function which will collect the data from this API endpoint and add it to&amp;hellip;&lt;/li&gt;
+&lt;li&gt;…an SQS message queue.&lt;/li&gt;
+&lt;li&gt;1 or more Lambda functions which will periodically ask the SQS message queue if there are any messages to process and, if so, process these messages (votes) and add them to&amp;hellip;&lt;/li&gt;
+&lt;li&gt;…a Dynamo DB table.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let&amp;rsquo;s get started!  The [next post]() in this series will go over the first segment of our pipeline: the API gateway and the initial Lambda function.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://example.org/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/about/</guid>
+      <description>
+
+&lt;h1 id=&#34;mike&#34;&gt;Mike&lt;/h1&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
