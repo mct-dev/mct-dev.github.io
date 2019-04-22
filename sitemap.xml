@@ -2,7 +2,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
     <url>
-      <loc>http://example.org/categories/aws/</loc>
+      <loc>https://mct-dev.github.io/categories/aws/</loc>
       
       <lastmod>2019-04-16T00:00:00+00:00</lastmod>
       
@@ -14,7 +14,7 @@
     </url>
   
     <url>
-      <loc>http://example.org/categories/</loc>
+      <loc>https://mct-dev.github.io/categories/</loc>
       
       <lastmod>2019-04-16T00:00:00+00:00</lastmod>
       
@@ -26,7 +26,7 @@
     </url>
   
     <url>
-      <loc>http://example.org/</loc>
+      <loc>https://mct-dev.github.io/</loc>
       
       <lastmod>2019-04-16T00:00:00+00:00</lastmod>
       
@@ -38,7 +38,7 @@
     </url>
   
     <url>
-      <loc>http://example.org/posts/</loc>
+      <loc>https://mct-dev.github.io/posts/</loc>
       
       <lastmod>2019-04-16T00:00:00+00:00</lastmod>
       
@@ -50,7 +50,7 @@
     </url>
   
     <url>
-      <loc>http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/</loc>
+      <loc>https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/</loc>
       
       <lastmod>2019-04-16T00:00:00+00:00</lastmod>
       
@@ -60,7 +60,7 @@
     </url>
   
     <url>
-      <loc>http://example.org/posts/aws-sqs-microservice-pipeline/</loc>
+      <loc>https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/</loc>
       
       <lastmod>2019-04-11T00:00:00+00:00</lastmod>
       
@@ -70,7 +70,7 @@
     </url>
   
     <url>
-      <loc>http://example.org/about/</loc>
+      <loc>https://mct-dev.github.io/about/</loc>
       
       
       
@@ -80,7 +80,7 @@
     </url>
   
     <url>
-      <loc>http://example.org/tags/</loc>
+      <loc>https://mct-dev.github.io/tags/</loc>
       
       
       

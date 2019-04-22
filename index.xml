@@ -1,7 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mike Tobias on Mike Tobias</title>
-    <link>http://example.org/</link>
+    <link>https://mct-dev.github.io/</link>
     <description>Recent content in Mike Tobias on Mike Tobias</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -10,10 +10,10 @@
     
     <item>
       <title>Simple API Endpoints with Serverless and Lambda</title>
-      <link>http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/</link>
+      <link>https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/</link>
       <pubDate>Tue, 16 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/</guid>
+      <guid>https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/</guid>
       <description>
 
 &lt;h1 id=&#34;simple-api-endpoints-with-serverless-and-lambda&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/h1&gt;
@@ -23,8 +23,8 @@
 &lt;p&gt;This is part 2 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;http://example.org/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;hr /&gt;
@@ -209,7 +209,7 @@ functions:
 
 &lt;p&gt;That pretty much does it for this bit of our pipeline.  We can test our function locally by installing the AWS SDK into our local project with &lt;code&gt;npm i aws-sdk&lt;/code&gt; and then running &lt;code&gt;sls invoke local —function post-vote —data &amp;lt;insert data string&amp;gt;&lt;/code&gt;.  Here&amp;rsquo;s an example that I ran locally:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://example.org/images/blog/2019-04-17_sls-invoke-local.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mct-dev.github.io/images/blog/2019-04-17_sls-invoke-local.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The returned string of JSON doesn&amp;rsquo;t look pretty, but it does show that the function is working properly.  If you had trouble running this locally, you&amp;rsquo;ll likely have to &lt;a href=&#34;https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html&#34;&gt;configure your aws cli&lt;/a&gt; so that the AWS SDK we&amp;rsquo;re using can access your AWS resources.&lt;/p&gt;
 
@@ -221,10 +221,10 @@ functions:
     
     <item>
       <title>Netflix Voting Service - Case Study</title>
-      <link>http://example.org/posts/aws-sqs-microservice-pipeline/</link>
+      <link>https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/</link>
       <pubDate>Thu, 11 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/posts/aws-sqs-microservice-pipeline/</guid>
+      <guid>https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/</guid>
       <description>
 
 &lt;h1 id=&#34;netflix-voting-service-case-study&#34;&gt;Netflix Voting Service - Case Study&lt;/h1&gt;
@@ -234,8 +234,8 @@ functions:
 &lt;p&gt;This is part 1 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;http://example.org/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://example.org/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;hr /&gt;
@@ -270,10 +270,10 @@ functions:
     
     <item>
       <title></title>
-      <link>http://example.org/about/</link>
+      <link>https://mct-dev.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/about/</guid>
+      <guid>https://mct-dev.github.io/about/</guid>
       <description>
 
 &lt;h1 id=&#34;mike&#34;&gt;Mike&lt;/h1&gt;
