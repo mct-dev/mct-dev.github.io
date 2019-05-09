@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Mike Tobias</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 18 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://mct-dev.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Handling SQS Messages with Serverless Functions</title>
+      <link>https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/</link>
+      <pubDate>Thu, 18 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/</guid>
+      <description>This is part 3 of the series. Feel free to skip around to other sections using the links below.
+ Case Study and Grooming Simple API Endpoints with Serverless and Lambda Handling SQS Messages with Serverless Functions  Objective In our last post we set up an API endpoint and a serverless function which will receive voting data, add it to our SQS Queue, then publish to an SNS topic.</description>
+    </item>
     
     <item>
       <title>Simple API Endpoints with Serverless and Lambda</title>
@@ -17,8 +27,8 @@
       <pubDate>Tue, 16 Apr 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/</guid>
-      <description>Simple API Endpoints with Serverless and Lambda This is part 2 of the series. Feel free to skip around to other sections using the links below.
- Case Study and Grooming Simple API Endpoints with Serverless and Lambda  Objective Our objective in this segment is to create an API endpoint attached to a Lambda function which will handle vote submissions, adding each vote to an SQS Message Queue to be processed at a later time.</description>
+      <description>This is part 2 of the series. Feel free to skip around to other sections using the links below.
+ Case Study and Grooming Simple API Endpoints with Serverless and Lambda Handling SQS Messages with Serverless Functions  Objective Our objective in this segment is to create an API endpoint attached to a Lambda function which will handle vote submissions, adding each vote to an SQS Message Queue to be processed at a later time.</description>
     </item>
     
     <item>
@@ -27,8 +37,8 @@
       <pubDate>Thu, 11 Apr 2019 00:00:00 +0000</pubDate>
       
       <guid>https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/</guid>
-      <description>Netflix Voting Service - Case Study This is part 1 of the series. Feel free to skip around to other sections using the links below.
- Case Study and Grooming Simple API Endpoints with Serverless and Lambda  Case Study We are working at Netflix. Yep, you and me both. Our company, Netflix, has recently implemented their voting functionality where users can vote on different aspects of the show or movie they just watched.</description>
+      <description>This is part 1 of the series. Feel free to skip around to other sections using the links below.
+ Case Study and Grooming Simple API Endpoints with Serverless and Lambda Handling SQS Messages with Serverless Functions  Case Study We are working at Netflix. Yep, you and me both. Our company, Netflix, has recently implemented their voting functionality where users can vote on different aspects of the show or movie they just watched.</description>
     </item>
     
   </channel>

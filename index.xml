@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mike Tobias on Mike Tobias</title>
@@ -5,8 +6,364 @@
     <description>Recent content in Mike Tobias on Mike Tobias</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 18 Apr 2019 00:00:00 +0000</lastBuildDate>
     <atom:link href="/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Handling SQS Messages with Serverless Functions</title>
+      <link>https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/</link>
+      <pubDate>Thu, 18 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/</guid>
+      <description>
+
+&lt;p&gt;This is part 3 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/&#34;&gt;Handling SQS Messages with Serverless Functions&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;objective&#34;&gt;Objective&lt;/h2&gt;
+
+&lt;p&gt;In our &lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;last post&lt;/a&gt; we set up an API endpoint and a serverless function which will receive voting data, add it to our SQS Queue, then publish to an SNS topic. Now, we need to build a function which will consume messages from this SQS Queue and add them to a database. We&amp;rsquo;ll use DynamoDB for our database because it&amp;rsquo;s scalable, reliable, NoSQL, and integrates well with our pipeline.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-new-function&#34;&gt;The new function&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s get right to it. Here&amp;rsquo;s our second function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;&amp;quot;use strict&amp;quot;;
+const AWS = require(&amp;quot;aws-sdk&amp;quot;);
+const sqs = new AWS.SQS({apiVersion: &amp;quot;2012-11-05&amp;quot;});
+const db = new AWS.DynamoDB.DocumentClient({apiVersion: &amp;quot;2012-08-10&amp;quot;});
+
+AWS.config.update({region: &amp;quot;us-east-1&amp;quot;});
+
+const getQueueUrl = async () =&amp;gt; {
+  let queueUrlResponse = await sqs.getQueueUrl({
+    QueueName: process.env.SQS_QUEUE_NAME
+  }).promise();
+
+  return queueUrlResponse.QueueUrl;
+};
+
+const getMessages = async (queueUrl) =&amp;gt; {
+  let messagesResponse = await sqs.receiveMessage({
+    QueueUrl: queueUrl,
+    WaitTimeSeconds: 5,
+    MaxNumberOfMessages: 10
+  }).promise();
+
+  return messagesResponse &amp;amp;&amp;amp; messagesResponse.Messages
+    ? messagesResponse.Messages
+    : [];
+};
+
+module.exports.handleSqsMessages = async (event) =&amp;gt; {
+  const dbTableName = process.env.DYNAMODB_TABLE;
+  const sqsQueueName = process.env.SQS_QUEUE_NAME;
+  const timestamp = new Date().getTime();
+
+  if (event &amp;amp;&amp;amp; event.Records) {
+    console.log(&amp;quot;Event Records: &amp;quot;, event.Records);
+    let message = event.Records[0].Message;
+    console.log(&amp;quot;Event received.&amp;quot;);
+    console.log(`Event SNS Message: ${message}.`);
+  }
+
+  let canProcessMessages = true;
+  let queueUrl = await getQueueUrl(sqsQueueName);
+
+  if (!queueUrl) {
+    canProcessMessages = false;
+  }
+
+  while (canProcessMessages) {
+    let messages = await getMessages(queueUrl);
+
+    if (!messages || !messages.length) {
+      console.log(`No messages found in queue ${sqsQueueName}.`);
+      canProcessMessages = false;
+      return 0;
+    }
+
+    for (let msg of messages) {
+      let msgId = msg.MessageId;
+      let msgBody = JSON.parse(msg.Body);
+
+      if (!(msgId &amp;amp;&amp;amp; msgBody)) {
+        // go to next message
+        continue;
+      }
+      
+      console.log(`processing message (id: ${msgId})`);
+
+      try {
+        await db.put({
+          TableName: dbTableName,
+          Item: {
+            id: msgId,
+            VoteData: msgBody,
+            createdAt: timestamp,
+            updatedAt: timestamp
+          }
+        }).promise();
+
+        console.log(`DB PUT successful! Message Id: ${msgId}`);
+      } catch (err) {
+        console.error(`DB PUT failed! Message Id: ${msgId}. Error: ${err}`);
+        return 1;
+      }
+
+      try {
+        await sqs.deleteMessage({
+          QueueUrl: queueUrl,
+          ReceiptHandle: msg.ReceiptHandle
+        }).promise();
+
+        console.log(`Message deleted from SQS Queue. Queue URL: ${queueUrl} | Message Receipt Handle: ${msg.ReceiptHandle}`);
+      } catch (err) {
+        console.error(`Message deletion FAILED. Message Receipt Handle: ${msg.ReceiptHandle}. Error: ${err}`);
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+};
+&amp;quot;use strict&amp;quot;;
+const AWS = require(&amp;quot;aws-sdk&amp;quot;);
+const sqs = new AWS.SQS({apiVersion: &amp;quot;2012-11-05&amp;quot;});
+const db = new AWS.DynamoDB.DocumentClient({apiVersion: &amp;quot;2012-08-10&amp;quot;});
+
+AWS.config.update({region: &amp;quot;us-east-1&amp;quot;});
+
+const getQueueUrl = async () =&amp;gt; {
+  let queueUrlResponse = await sqs.getQueueUrl({
+    QueueName: process.env.SQS_QUEUE_NAME
+  }).promise();
+
+  return queueUrlResponse.QueueUrl;
+};
+
+const getMessages = async (queueUrl) =&amp;gt; {
+  let messagesResponse = await sqs.receiveMessage({
+    QueueUrl: queueUrl,
+    WaitTimeSeconds: 5,
+    MaxNumberOfMessages: 10
+  }).promise();
+
+  return messagesResponse &amp;amp;&amp;amp; messagesResponse.Messages
+    ? messagesResponse.Messages
+    : [];
+};
+
+module.exports.handleSqsMessages = async (event) =&amp;gt; {
+  const dbTableName = process.env.DYNAMODB_TABLE;
+  const sqsQueueName = process.env.SQS_QUEUE_NAME;
+  const timestamp = new Date().getTime();
+
+  if (event &amp;amp;&amp;amp; event.Records) {
+    console.log(&amp;quot;Event Records: &amp;quot;, event.Records);
+    let message = event.Records[0].Message;
+    console.log(&amp;quot;Event received.&amp;quot;);
+    console.log(`Event SNS Message: ${message}.`);
+  }
+
+  let canProcessMessages = true;
+  let queueUrl = await getQueueUrl(sqsQueueName);
+
+  if (!queueUrl) {
+    canProcessMessages = false;
+  }
+
+  while (canProcessMessages) {
+    let messages = await getMessages(queueUrl);
+
+    if (!messages || !messages.length) {
+      console.log(`No messages found in queue ${sqsQueueName}.`);
+      canProcessMessages = false;
+      return 0;
+    }
+
+    for (let msg of messages) {
+      let msgId = msg.MessageId;
+      let msgBody = JSON.parse(msg.Body);
+
+      if (!(msgId &amp;amp;&amp;amp; msgBody)) {
+        // go to next message
+        continue;
+      }
+      
+      console.log(`processing message (id: ${msgId})`);
+
+      try {
+        await db.put({
+          TableName: dbTableName,
+          Item: {
+            id: msgId,
+            VoteData: msgBody,
+            createdAt: timestamp,
+            updatedAt: timestamp
+          }
+        }).promise();
+
+        console.log(`DB PUT successful! Message Id: ${msgId}`);
+      } catch (err) {
+        console.error(`DB PUT failed! Message Id: ${msgId}. Error: ${err}`);
+        return 1;
+      }
+
+      try {
+        await sqs.deleteMessage({
+          QueueUrl: queueUrl,
+          ReceiptHandle: msg.ReceiptHandle
+        }).promise();
+
+        console.log(`Message deleted from SQS Queue. Queue URL: ${queueUrl} | Message Receipt Handle: ${msg.ReceiptHandle}`);
+      } catch (err) {
+        console.error(`Message deletion FAILED. Message Receipt Handle: ${msg.ReceiptHandle}. Error: ${err}`);
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+};
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So what are we working with here? We&amp;rsquo;ve got a couple &amp;ldquo;helper&amp;rdquo; functions at the top for getting the SQS queue URL and retrieving messages from this queue. Then, we&amp;rsquo;ve got the main function. In there, we&amp;rsquo;re really only doing a few things: logging the event that triggered this function (using &lt;code&gt;console.log&lt;/code&gt;), collecting messages from the SQS queue, adding all messages found to our database, then deleting all the messages we&amp;rsquo;ve processed from the SQS queue. Let&amp;rsquo;s go over it a little more in detail.&lt;/p&gt;
+
+&lt;p&gt;First we first collect our databse table name and SQS queue name from our environment variables. You&amp;rsquo;ll notice the &lt;code&gt;DYNAMODB_TABLE&lt;/code&gt; environment variable is a new one. We&amp;rsquo;ve added that to the &lt;code&gt;serverless.yml&lt;/code&gt; file, which well see in a moment. We also establish a timestamp which we can use later on in the function.&lt;/p&gt;
+
+&lt;p&gt;Next, we log the event &lt;code&gt;Records&lt;/code&gt; if any are found. This is only used for tracking purposes. By adding a few of these &lt;code&gt;console.log&lt;/code&gt; statements throughout our function, we are then able to look into our logs in AWS CloudWatch to see a detailed accounting of what happened when this function ran.  The &lt;code&gt;Records&lt;/code&gt; object will exist only if the function was triggered by an SNS publish.&lt;/p&gt;
+
+&lt;p&gt;Now we collect our SQS queue URL and begin processing messages. Assuming a queue URL was returned, we&amp;rsquo;ll establish a loop which only closes when we decide we can no longer process messages (&lt;code&gt;canProcessMessages=false&lt;/code&gt;). In the loop, we grab the messages using our &lt;code&gt;getMessages&lt;/code&gt; function. If this returns no messages, we stop the loop and the function ends.  However, if it returns some messages we process each one of them. This means collecting the &lt;code&gt;MessageId&lt;/code&gt; and the message &lt;code&gt;Body&lt;/code&gt;, then running a &lt;code&gt;PUT&lt;/code&gt; to our dynamoDB table. The format of the object we pass to this &lt;code&gt;db.put&lt;/code&gt; is important. You can find more info about this formatting in the &lt;a href=&#34;https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#put-property&#34;&gt;nodejs aws-sdk docs&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If any errors were hit on our way to this point, we&amp;rsquo;ve logged them to AWS CloudWatch and returned a non-zero value, ending the function.  But, if we made it this far without errors, we delete the message from our SQS queue and then we&amp;rsquo;re done!&lt;/p&gt;
+
+&lt;h2 id=&#34;the-updated-yaml-file&#34;&gt;The updated yaml file&lt;/h2&gt;
+
+&lt;p&gt;So, now comes the second major part of this segment of our pipeline: the &lt;code&gt;serverless.yml&lt;/code&gt; file. Here&amp;rsquo;s the updated version. Take a quick read.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;service: voting-app
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, &#39;dev&#39;}
+  region: ${opt:region, &#39;us-east-1&#39;}
+  environment:
+    DYNAMODB_TABLE: ${file(../voting-db/serverless.yml):service}-${self:provider.stage}-table
+    SQS_QUEUE_NAME: ${self:service}-${self:provider.stage}-queue
+    SNS_TOPIC: ${self:service}-${self:provider.stage}-topic
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - SQS:*
+      Resource: {&amp;quot;Fn::Join&amp;quot; : [&amp;quot;&amp;quot;, [&amp;quot;arn:aws:sqs:${self:provider.region}:&amp;quot;, {&amp;quot;Ref&amp;quot;:&amp;quot;AWS::AccountId&amp;quot;}, &amp;quot;:${self:provider.environment.SQS_QUEUE_NAME}&amp;quot; ] ] }
+    - Effect: Allow
+      Action:
+        - dynamoDB:*
+      Resource: {&amp;quot;Fn::Join&amp;quot; : [&amp;quot;&amp;quot;, [&amp;quot;arn:aws:dynamodb:${self:provider.region}:&amp;quot;, {&amp;quot;Ref&amp;quot;:&amp;quot;AWS::AccountId&amp;quot;}, &amp;quot;:table/${self:provider.environment.DYNAMODB_TABLE}&amp;quot; ] ] }
+    - Effect: Allow
+      Action:
+        - SNS:*
+      Resource: {&amp;quot;Fn::Join&amp;quot;:[&amp;quot;&amp;quot;, [&amp;quot;arn:aws:sns:${self:provider.region}:&amp;quot;, {&amp;quot;Ref&amp;quot;:&amp;quot;AWS::AccountId&amp;quot;}, &amp;quot;:${self:provider.environment.SNS_TOPIC}&amp;quot;]]}
+
+functions:
+  post-vote:
+    handler: post-vote.postVote
+    events:
+      - http:
+          path: vote
+          method: post
+    environment:
+      SNS_TOPIC_ARN: {&amp;quot;Fn::Join&amp;quot;:[&amp;quot;&amp;quot;, [&amp;quot;arn:aws:sns:${self:provider.region}:&amp;quot;, {&amp;quot;Ref&amp;quot;:&amp;quot;AWS::AccountId&amp;quot;}, &amp;quot;:${self:provider.environment.SNS_TOPIC}&amp;quot;]]}
+  handle-votes:
+    handler: handle-votes.handleSqsMessages
+    events:
+      - schedule: rate(1 minute)
+      - sns: ${self:provider.environment.SNS_TOPIC}
+
+resources:
+  Resources:
+    VotesQueue:
+      Type: &#39;AWS::SQS::Queue&#39;
+      Properties:
+        QueueName: ${self:provider.environment.SQS_QUEUE_NAME}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The new additions to point out here are not many. We&amp;rsquo;ve added the new environment variable, &lt;code&gt;DYNAMODB_TABLE&lt;/code&gt;. We added a new &lt;code&gt;iamRoleStatement&lt;/code&gt; which allows our functions access to dynamoDB.  And we added a new &lt;code&gt;handle-votes&lt;/code&gt; section in our &lt;code&gt;functions&lt;/code&gt;. This is the interesting bit!  This function has 2 &lt;code&gt;events&lt;/code&gt; set up for it.  One of these events is a &lt;code&gt;schedule&lt;/code&gt; which will trigger the function every &amp;ldquo;1 minute&amp;rdquo;.  This is probably excessive, and could be increased to a larger amount of time in production.  The idea with this schedule is just to have the function run some &amp;ldquo;cleanup&amp;rdquo; every now and then to make sure that all of our SQS messages get handled.  However, we should be able to rely on the next event to do most of the work here.  The &lt;code&gt;sns&lt;/code&gt; event will subscribe our &lt;code&gt;handle-votes&lt;/code&gt; function to a specific SNS Topic, which we&amp;rsquo;ve provided by referencing an environment variable in this file.  Since the function is subscribed, it will be triggered when our &lt;em&gt;first&lt;/em&gt; function (&lt;code&gt;post-vote&lt;/code&gt;) publishes a message to this topic.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s all for this file!  But what about DynamoDB?  We aren&amp;rsquo;t creating that resource here, are we?  Correct!  The reason we don&amp;rsquo;t include databases here is that, in a production environment, databases usually exist already or at least won&amp;rsquo;t be changed very often.  This serverless file is designed so that you can create, update, and destroy all of these resources and services at will. This isn&amp;rsquo;t the approach you&amp;rsquo;d want to take with your data, however.&lt;/p&gt;
+
+&lt;p&gt;If you did want to create a Dynamo database and table using serverless, maybe for testing purposes, you can still do that!  Serverless has the power!  The best plan here would be to create a new &lt;code&gt;serverless.yml&lt;/code&gt; file somewhere &lt;strong&gt;outside&lt;/strong&gt; of your &lt;code&gt;voting-functions&lt;/code&gt; directory.  The idea is to have a different area where you can run your &lt;code&gt;serverless&lt;/code&gt; command in the terminal, so that when you update your Lambda functions and other resources you won&amp;rsquo;t also try to re-deploy your DynamoDB table when you update these functions using &lt;code&gt;serverless deploy&lt;/code&gt;.  So, what would that new file look like for creating your database?  Here you go:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;service: voting-db
+
+custom:
+  tableName: ${self:service}-${self:provider.stage}-table
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, &#39;dev&#39;}
+  region: ${opt:region, &#39;us-east-1&#39;}
+
+resources:
+  Resources:
+    VotesDynamoDbTable:
+      Type: &#39;AWS::DynamoDB::Table&#39;
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A few sections here probably look familiar to you.  The resources section creates our resources and in it we&amp;rsquo;ve established our &lt;code&gt;VotesDynamoDbTable&lt;/code&gt;.  Tables in DynamoDB require at least 1 &lt;code&gt;Key&lt;/code&gt; to serve as the primary key.  This is created by first establishing an &lt;code&gt;AttributeDefinition&lt;/code&gt; and then creating our &lt;code&gt;KeySchema&lt;/code&gt; which references the name of our newly created Attribute.  We then provide the &lt;code&gt;TableName&lt;/code&gt; at the end.  Check out the &lt;a href=&#34;https://github.com/serverless/examples/blob/master/aws-node-rest-api-with-dynamodb/serverless.yml&#34;&gt;serverless examples repo&lt;/a&gt; for more examples of using dynamodb with the serverless framework.&lt;/p&gt;
+
+&lt;p&gt;We also use a new section here called &lt;code&gt;custom&lt;/code&gt;.  This is a good area for you to define local variables for your file. Since this new serverless service doesn&amp;rsquo;t need to use the dynamoDB table name anywhere else, we can just put it in this &lt;code&gt;custom&lt;/code&gt; section for reference within this file.&lt;/p&gt;
+
+&lt;p&gt;Now, you can run &lt;code&gt;serverless deploy&lt;/code&gt; in this directory to create this DynamoDB table!&lt;/p&gt;
+
+&lt;h2 id=&#34;other-thoughts&#34;&gt;Other thoughts&lt;/h2&gt;
+
+&lt;p&gt;One thought you may have had while reading this is:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;What if we fail to delete the SQS message after processing it? Wouldn&amp;rsquo;t we end up adding a duplicate to the database later on?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;No. The &lt;code&gt;MessageId&lt;/code&gt; value provided by each message from our SQS queue will remain the same if we fail to delete that item. We will, indeed, end up collecting this message again later on, but since we&amp;rsquo;re using this value as our primary key in the DynamoDB table we&amp;rsquo;d avoid duplicating it.  When you try to put a record in a DynamoDB table and the record&amp;rsquo;s primary key already exists, DyanmoDB will wimply simply &lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutItem.html&#34;&gt;overwrite the old item with the new&lt;/a&gt; one. Since the data from our SQS message will not have changed, this would be alright with us!&lt;/p&gt;
+
+&lt;h2 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h2&gt;
+
+&lt;p&gt;We have now successfully built our pipeline!  To sum it all up, we now have:
+* An API endpoint where a client can submit voting data.
+* A serverless Lambda function which will accept data from this endpoint, add it to a SQS queue, and publish an SNS message.
+* Another serverless Lambda function which will trigger when a message is published to this SNS topic OR on a timed schedule. This function will collect votes from the SQS queue, add them to a DynamoDB table, and then delete them from the queue.
+* A DynamoDB table to store the voting data.&lt;/p&gt;
+
+&lt;p&gt;This pipeline is extremely scalable and can be created, updated, and deleted at the push of a button! You can try it now by cloning &lt;a href=&#34;https://github.com/mct-dev/voting-app&#34;&gt;this repo&lt;/a&gt; and running &lt;code&gt;npm deploy&lt;/code&gt;. To remove all of these resources from AWS, just run &lt;code&gt;npm run remove&lt;/code&gt;.  Keep in mind that you&amp;rsquo;ll need to be authenticated to your AWS account for any of this to work.  You can find out how to do this &lt;a href=&#34;https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;One important note: if you&amp;rsquo;re creating your database with the serverless template I&amp;rsquo;ve shown above, you won&amp;rsquo;t be able to remove it with a &lt;code&gt;serverless remove&lt;/code&gt; command.  This is for all the same &amp;ldquo;data integrity&amp;rdquo; and safety reasons as we mentioned before.  AWS won&amp;rsquo;t let you destroy database things without you explicitly telling it to do so.&lt;/p&gt;
+
+&lt;p&gt;And with that, I think that&amp;rsquo;ll do it for now.  If you&amp;rsquo;re still reading, I appreciate you sticking it out.  Be sure to check in for the next one.  I&amp;rsquo;ll make sure we build something even cooler. :)&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Simple API Endpoints with Serverless and Lambda</title>
@@ -16,15 +373,12 @@
       <guid>https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/</guid>
       <description>
 
-&lt;h1 id=&#34;simple-api-endpoints-with-serverless-and-lambda&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/h1&gt;
-
-&lt;hr /&gt;
-
 &lt;p&gt;This is part 2 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/&#34;&gt;Handling SQS Messages with Serverless Functions&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;hr /&gt;
@@ -51,11 +405,11 @@
 
 &lt;p&gt;First, we&amp;rsquo;ll install the Serverless Framework.  There&amp;rsquo;s some great directions on how you can do that &lt;a href=&#34;https://serverless.com/framework/docs/getting-started/&#34;&gt;here&lt;/a&gt;, but essentially all you&amp;rsquo;ll be doing is running &lt;code&gt;npm install -g serverless&lt;/code&gt;.  This will install the cli tools for the framework, accessible through the &lt;code&gt;sls&lt;/code&gt; or &lt;code&gt;serverless&lt;/code&gt; commands.&lt;/p&gt;
 
-&lt;p&gt;Now we can initialize a new project directory and create our serverless functions.  First, create a root project directory for yourself.  Mine will be &lt;code&gt;~/projects/voting-service/&lt;/code&gt;. I also chose to add a subdirectory in this root folder called &lt;code&gt;serverless-functions&lt;/code&gt;, just to keep the serverless portion of this service separated.  I&amp;rsquo;ll use this location to store all of my Lambda functions for the project.  So, let&amp;rsquo;s &lt;code&gt;cd&lt;/code&gt; into this directory and run the below command.&lt;/p&gt;
+&lt;p&gt;Now we can initialize a new project directory and create our serverless functions.  First, create a root project directory for yourself.  Mine will be &lt;code&gt;~/projects/voting-project/&lt;/code&gt;. I also chose to add a subdirectory in this root folder called &lt;code&gt;serverless-functions&lt;/code&gt;, just to keep the serverless portion of this service separated.  I&amp;rsquo;ll use this location to store all of my Lambda functions for the project.  So, let&amp;rsquo;s &lt;code&gt;cd&lt;/code&gt; into this directory and run the below command.&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;sls create —template aws-nodejs —path voting-service&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;This command will create all of the necessary files for your serverless function, using a Node.js template.  Let&amp;rsquo;s open the &lt;code&gt;handler.js&lt;/code&gt; file (full path: &lt;code&gt;~/projects/voting-service/serverless-functions/voting-service/handler.js&lt;/code&gt;). This file contains some boilerplate code for a Node.js lambda function:&lt;/p&gt;
+&lt;p&gt;This command will create all of the necessary files for your serverless function, using a Node.js template.  Let&amp;rsquo;s open the &lt;code&gt;handler.js&lt;/code&gt; file (full path: &lt;code&gt;~/projects/voting-project/serverless-functions/voting-service/handler.js&lt;/code&gt;). This file contains some boilerplate code for a Node.js lambda function:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// handler.js
 &#39;use strict&#39;;
@@ -129,70 +483,127 @@ module.exports.postVote = async (event) =&amp;gt; {
 
 &lt;p&gt;Ok, now let&amp;rsquo;s throw some useful code in this file.  Currently, our function simply accepts the &lt;code&gt;event&lt;/code&gt; object provided by the API endpoint and returns an object with a &lt;code&gt;200&lt;/code&gt; status code and a &lt;code&gt;body&lt;/code&gt; property containing a simple message and the &lt;code&gt;event&lt;/code&gt; object.  Let&amp;rsquo;s update this so that, instead, we collect our voting data from the &lt;code&gt;event&lt;/code&gt; parameter and add this voting data to a specific SQS queue.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// post-vote.js
-&#39;use strict&#39;;
-const AWS = require(&#39;aws-sdk&#39;);
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;&amp;quot;use strict&amp;quot;;
+const AWS = require(&amp;quot;aws-sdk&amp;quot;);
+const parseEventData = (apiEventData) =&amp;gt; {
 
-AWS.config.update({region: &#39;us-east-1&#39;});
+  // data should be passed in through query string params
+  if (apiEventData.queryStringParameters) {
+    return apiEventData.queryStringParameters;
+  }
+
+  return null;
+};
+
+AWS.config.update({region: &amp;quot;us-east-1&amp;quot;});
 
 module.exports.postVote = async (event, context) =&amp;gt; {
-  let sqs = new AWS.SQS({apiVersion: &#39;2012-11-05&#39;});
+  const sqs = new AWS.SQS({apiVersion: &amp;quot;2012-11-05&amp;quot;});
+  const sns = new AWS.SNS({apiVersion: &amp;quot;2010-03-31&amp;quot;});
   let voteQueueUrl;
-  let sqsMessageResponse;
+  let voteData;
 
-  try {
-    voteQueueUrl = await sqs.getQueueUrl({
-        QueueName: &#39;voting-app-queue&#39;,
-    }).promise();
-    sqsMessageResponse = await sqs.sendMessage({
-      MessageBody: JSON.stringify(event),
-      QueueUrl: voteQueueUrl.QueueUrl
-    }).promise()
-  }
-  catch (err) {
+  voteData = parseEventData(event);
+
+  if (!voteData) {
     return {
       statusCode: 500,
-      body: JSON.stringify(err)
-    }
+      isBase64Encoded: false,
+      headers: {
+        &amp;quot;Content-Type&amp;quot;: &amp;quot;text/plain&amp;quot;
+      },
+      body: JSON.stringify({
+        awsRequestId: context.awsRequestId,
+        error: {
+          message: &amp;quot;No query string parameters were found!&amp;quot;
+        },
+        input: event
+      })
+    };
+
   }
+  
+  try {
+    voteQueueUrl = await sqs.getQueueUrl({
+      QueueName: process.env.SQS_QUEUE_NAME,
+    }).promise();
+  
+    await sqs.sendMessage({
+      MessageBody: JSON.stringify(voteData),
+      QueueUrl: voteQueueUrl.QueueUrl
+    }).promise();
+    console.log(&amp;quot;SQS message sent successfully!&amp;quot;);
+  } catch (err) {
+    console.error(`SQS message send FAILED. Error: ${err}`);
+  }
+
+  // notify our second function that there&#39;s a new vote to handle
+  try {
+    await sns.publish({
+      Message: &amp;quot;New Vote Posted!&amp;quot;,
+      TopicArn: process.env.SNS_TOPIC_ARN
+    });
+    console.log(&amp;quot;SNS published successfully!&amp;quot;);
+  } catch (err) {
+    console.error(`SQS message send FAILED. Error: ${err}`);
+  }
+
+
   return {
     statusCode: 200,
+    headers: {
+      &amp;quot;Content-Type&amp;quot;: &amp;quot;text/plain&amp;quot;
+    },
+    isBase64Encoded: false,
     body: JSON.stringify({
-      voteQueueUrl,
-      sqsMessageResponse,
-      input: event,
-    }),
+      awsRequestId: context.awsRequestId,
+      message: &amp;quot;Vote successfully processed.&amp;quot;,
+      input: event
+    })
   };
 };
+
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;A couple of things to go over here.  First, the AWS SDK is made available in Lambda to any programming language that needs it.  In Nodejs, this is the &lt;code&gt;aws-sdk&lt;/code&gt; package.  This package allows us to access other AWS services, in this case the SQS service.  Also, when using the AWS SDK, we always want to specify the region we&amp;rsquo;re working in as well as a specific API version for the service that we use.  We&amp;rsquo;ve done that here near the top of the file.  Let&amp;rsquo;s go over the code in a bit more detail.&lt;/p&gt;
+&lt;p&gt;A couple of things to go over here.  First, the AWS SDK is made available in Lambda to all supported languages.  In Nodejs, this is the &lt;code&gt;aws-sdk&lt;/code&gt; package.  This package allows us to access other AWS services, in this case the SQS service.  Also, when using the AWS SDK, we always want to specify the region we&amp;rsquo;re working in as well as a specific API version for the service that we use.  We&amp;rsquo;ve done that here near the top of the file.  Let&amp;rsquo;s go over the code in a bit more detail.&lt;/p&gt;
 
-&lt;p&gt;We first create a new &lt;code&gt;AWS.SQS&lt;/code&gt; object, specifying its most recent API version.  Then, we collect the &lt;code&gt;QueueUrl&lt;/code&gt; for a SQS Queue named &lt;code&gt;voting-app-queue&lt;/code&gt;.  This is a SQS queue that I&amp;rsquo;ve created directly through the AWS management console.  You can use the AWS SDK to create a queue, but we don&amp;rsquo;t necessarily need to programmatically create a queue in this scenario, so I just created one by hand.  Once we have this URL, we can add messages to our queue!  So, the next step (&lt;code&gt;sqs.sendMessage&lt;/code&gt;) sends a message to our QueueUrl adding the &lt;code&gt;event&lt;/code&gt; as the MessageBody.&lt;/p&gt;
+&lt;p&gt;First, we require the &lt;code&gt;aws-sdk&lt;/code&gt; and establish a function for parsing the event data (provided by the API endpoint).  Our endpoint will be set up with &amp;ldquo;Lambda Proxy&amp;rdquo; enabled by default, which means the &lt;code&gt;event&lt;/code&gt; object passed in to our function will have quite a bit of information in it.  This also means that our response from this function needs to have a &lt;code&gt;body&lt;/code&gt; which is formatted properly.  We&amp;rsquo;ll just use the &lt;code&gt;JSON.stringify()&lt;/code&gt; method for this.&lt;/p&gt;
 
-&lt;p&gt;Another cool thing to point out here is the &lt;code&gt;async&lt;/code&gt; / &lt;code&gt;await&lt;/code&gt; syntax.  Lambda supports more recent versions of Nodejs, which allows us to use this syntax to handle promises.  This makes our code much cleaner, avoiding lots of callbacks and such, especially while dealing with the AWS SDK - most things in there will be asynchronous calls, and can be made into a Nodejs &lt;code&gt;Promise&lt;/code&gt; by calling the &lt;a href=&#34;https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html#promise-property&#34;&gt;&lt;code&gt;.promise()&lt;/code&gt;&lt;/a&gt; function on the &lt;a href=&#34;https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html&#34;&gt;&lt;code&gt;AWS Request&lt;/code&gt;&lt;/a&gt; object (returned by &lt;code&gt;getQueueUrl&lt;/code&gt; and &lt;code&gt;sendMessage&lt;/code&gt; in our case).&lt;/p&gt;
+&lt;p&gt;We then set up a quick function for processing the data from our &lt;code&gt;event&lt;/code&gt; object.  In our case, all we want to do is make sure that &lt;code&gt;event&lt;/code&gt; &lt;em&gt;is&lt;/em&gt; an object and that it contains the &lt;code&gt;queryStringParameters&lt;/code&gt; property.  This is where our voting data should be found.  If these things aren&amp;rsquo;t available, we&amp;rsquo;ll just throw an error with a quick message explaining that the voting data was not passed in correctly to the API endpoint.  This error can be caught in our &lt;code&gt;async&lt;/code&gt; function and returned to the client with an appropriate status code.  But if all goes well, we&amp;rsquo;ll return the &lt;code&gt;queryStringParameters&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;This function is also associated with an API endpoint, so we want to make sure we return something to that API call.  In this case, if something goes wrong while dealing with our SQS service, we&amp;rsquo;ll return a &lt;code&gt;500&lt;/code&gt; error code (&amp;ldquo;Internal Server Error&amp;rdquo;) as well as the error details.  We could probably also add some more checks in this function to verify the data, returning different error codes if needed, but for now this will do just fine.  If all goes well in our function, we&amp;rsquo;ll have successfully added a message to the SQS queue and we return a &lt;code&gt;200&lt;/code&gt; status and some information about our queue and the message we sent.&lt;/p&gt;
+&lt;p&gt;In our main function, &lt;code&gt;postVote&lt;/code&gt;, we first initialize the SQS and &lt;code&gt;SNS&lt;/code&gt; objects and initialize the variables we&amp;rsquo;ll use in this function.  Then, we get our voting data from the &lt;code&gt;event&lt;/code&gt; parameter, using the function we created.  If the no voting data was found, we&amp;rsquo;ll return a &lt;code&gt;400&lt;/code&gt; status code and the error as a property of &lt;code&gt;body&lt;/code&gt;. If we do have data, we&amp;rsquo;ll continue by collecting the URL of our SQS queue and then adding a new message to this queue.  This bit will be in a try / catch block so that, if we hit any problems here, we can log an error message with the details.  After this, we&amp;rsquo;ll publish an SNS message.  This will serve as one of the triggers for our next lambda function.  This other function will be subscribed to this SNS topic and will be triggered whenever we publish to that topic.  Again, we surround the publishing of the SNS message in a try / catch so that we can log a specific error if something goes wrong with this part.  Finally, if we ran everything successfully in our main &lt;code&gt;postVote&lt;/code&gt; function, we&amp;rsquo;ll return a 200 status and a success message in the body.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;An important thing to note in our above code is that most functions in the AWS SDK will be asynchronous calls, and can be made into a Nodejs &lt;code&gt;Promise&lt;/code&gt; by calling the &lt;a href=&#34;https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html#promise-property&#34;&gt;&lt;code&gt;.promise()&lt;/code&gt;&lt;/a&gt; function on the &lt;a href=&#34;https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html&#34;&gt;&lt;code&gt;AWS Request&lt;/code&gt;&lt;/a&gt; object (returned by &lt;code&gt;getQueueUrl&lt;/code&gt; and &lt;code&gt;sendMessage&lt;/code&gt; in our case).  This returns a &lt;code&gt;Promise&lt;/code&gt; instead of using the callback, which allows us to use &lt;code&gt;async&lt;/code&gt; and &lt;code&gt;await&lt;/code&gt; to write cleaner code!&lt;/p&gt;
+
+&lt;hr /&gt;
 
 &lt;h2 id=&#34;permissions&#34;&gt;Permissions&lt;/h2&gt;
 
-&lt;p&gt;If you&amp;rsquo;ve worked in AWS before, you&amp;rsquo;ll know that we need to set up some permissions here. Our Lambda function will have a couple of permissions by default - logging to CloudWatch, for example - but it won&amp;rsquo;t have the ability to do things in SQS unless we explicitly give those permissions to it.  This is done through &amp;ldquo;Roles&amp;rdquo; in AWS.&lt;/p&gt;
+&lt;p&gt;If you&amp;rsquo;ve worked in AWS before, you&amp;rsquo;ll know that we need to set up some permissions here in order for these functions to run properly. Our Lambda function will have a couple of permissions by default - logging to CloudWatch, for example, which is done with the &lt;code&gt;console.log&lt;/code&gt; statements - but it won&amp;rsquo;t have the ability to do things in SQS or SNS unless we explicitly give those permissions to it.  This is done through IAM Roles.&lt;/p&gt;
 
-&lt;p&gt;With the Serverless framework, we can set up a role within our code.  This makes management of the service as a whole much easier.  To do this, we&amp;rsquo;ll open up the &lt;code&gt;serverless.yml&lt;/code&gt; file again and make a minor change.  Here&amp;rsquo;s the result:&lt;/p&gt;
+&lt;p&gt;With the Serverless framework, we can set up a role within our code.  This makes management of the service as a whole much easier.  To do this, we&amp;rsquo;ll open up the &lt;code&gt;serverless.yml&lt;/code&gt; file again and make some changes.  Here&amp;rsquo;s the result:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;# serverless.yml
-service: voting-app
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;service: voting-app
 
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: dev
-  region: us-east-1
+  stage: ${opt:stage, &#39;dev&#39;}
+  region: ${opt:region, &#39;us-east-1&#39;}
+  environment:
+    SQS_QUEUE_NAME: ${self:service}-${self:provider.stage}-queue
+    SNS_TOPIC: ${self:service}-${self:provider.stage}-topic
   iamRoleStatements:
-    - Effect: &amp;quot;Allow&amp;quot;
+    - Effect: Allow
       Action:
-        - sqs:*
-      Resource: &amp;quot;*&amp;quot;
+        - SQS:*
+      Resource: {&amp;quot;Fn::Join&amp;quot; : [&amp;quot;&amp;quot;, [&amp;quot;arn:aws:sqs:${self:provider.region}:&amp;quot;, {&amp;quot;Ref&amp;quot;:&amp;quot;AWS::AccountId&amp;quot;}, &amp;quot;:${self:provider.environment.SQS_QUEUE_NAME}&amp;quot; ] ] }
+    - Effect: Allow
+      Action:
+        - SNS:*
+      Resource: {&amp;quot;Fn::Join&amp;quot;:[&amp;quot;&amp;quot;, [&amp;quot;arn:aws:sns:${self:provider.region}:&amp;quot;, {&amp;quot;Ref&amp;quot;:&amp;quot;AWS::AccountId&amp;quot;}, &amp;quot;:${self:provider.environment.SNS_TOPIC}&amp;quot;]]}
 
 functions:
   post-vote:
@@ -201,9 +612,24 @@ functions:
       - http:
           path: vote
           method: post
+    environment:
+      SNS_TOPIC_ARN: {&amp;quot;Fn::Join&amp;quot;:[&amp;quot;&amp;quot;, [&amp;quot;arn:aws:sns:${self:provider.region}:&amp;quot;, {&amp;quot;Ref&amp;quot;:&amp;quot;AWS::AccountId&amp;quot;}, &amp;quot;:${self:provider.environment.SNS_TOPIC}&amp;quot;]]}
+
+resources:
+  Resources:
+    VotesQueue:
+      Type: &#39;AWS::SQS::Queue&#39;
+      Properties:
+        QueueName: ${self:provider.environment.SQS_QUEUE_NAME}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;With the &lt;code&gt;iamRoleStatements&lt;/code&gt; section, we are able to define the AWS Roles that we want our functions to assume.  Here we&amp;rsquo;ve added a role which allows our function to take &lt;em&gt;any&lt;/em&gt; action on &lt;em&gt;any&lt;/em&gt; SQS resource.  You can check &lt;a href=&#34;https://serverless.com/framework/docs/providers/aws/guide/iam/&#34;&gt;here&lt;/a&gt; for more information on how to set up roles in the Serverless Framework.&lt;/p&gt;
+&lt;p&gt;The first thing you&amp;rsquo;ve probably noticed is a lot of these: &lt;code&gt;{}&lt;/code&gt;.  What&amp;rsquo;s going on here? Well, in the serverless yaml files you can use variables and functions!  Take a quick look &lt;a href=&#34;https://serverless.com/framework/docs/providers/aws/guide/variables/&#34;&gt;here&lt;/a&gt; to get a good idea on how variables work, and &lt;a href=&#34;https://theserverlessway.com/aws/cloudformation/template-functions/&#34;&gt;here&lt;/a&gt; for a nice blog post on the functions.  Using variables and functions allows us to avoid repeating ourselves - see the &lt;a href=&#34;https://en.wikipedia.org/wiki/Don%27t_repeat_yourself&#34;&gt;DRY Policy&lt;/a&gt; - and also helps keep our naming conventions all the same throughout our pipeline.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;iamRoleStatements&lt;/code&gt; section is where we establish our IAM Roles.  These roles allow our Lambda functions to interact with SQS and SNS.  Here we&amp;rsquo;ve just said &amp;ldquo;Let our service access this specific resource and take any action on it&amp;rdquo; for both SQS and SNS. The resources in question are established at the &lt;code&gt;Resource&lt;/code&gt; fields, where we build an AWS ARN which will specifically point to our SNS Topic and SQS Queue.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ve also added &lt;em&gt;environment variables&lt;/em&gt; here for the SQS queue name and the SNS topic name.  These environment variables can be accessed at runtime by our functions!  You may have noticed in our function code above that we are collecting the SQS queue name and SNS topic name from &lt;code&gt;process.env&lt;/code&gt;.  The variables we establish here in the &lt;code&gt;environment&lt;/code&gt; section end up in that &lt;code&gt;process.env&lt;/code&gt; object!&lt;/p&gt;
+
+&lt;p&gt;The last important bit in this file is the &lt;code&gt;resources&lt;/code&gt; section.  This section will create actual AWS resources for us when we run our serverless service!   Here we create a SQS Queue, collecting the Queue Name from our environment variable at the top of the file.&lt;/p&gt;
 
 &lt;h2 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h2&gt;
 
@@ -213,9 +639,9 @@ functions:
 
 &lt;p&gt;The returned string of JSON doesn&amp;rsquo;t look pretty, but it does show that the function is working properly.  If you had trouble running this locally, you&amp;rsquo;ll likely have to &lt;a href=&#34;https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html&#34;&gt;configure your aws cli&lt;/a&gt; so that the AWS SDK we&amp;rsquo;re using can access your AWS resources.&lt;/p&gt;
 
-&lt;p&gt;We can now run &lt;code&gt;sls deploy&lt;/code&gt; within our &lt;code&gt;/serverless-functions/voting-service/&lt;/code&gt; directory and it will deploy everything that we need into AWS, permissions and all!  Then, if we want to remove all of these resources in AWS we can simply run &lt;code&gt;sls remove&lt;/code&gt; in the same directory.  Simple.&lt;/p&gt;
+&lt;p&gt;To deploy this to AWS, we run &lt;code&gt;sls deploy&lt;/code&gt; within our &lt;code&gt;/serverless-functions/voting-service/&lt;/code&gt; directory.  This will deploy everything that we need into AWS, permissions and all!  Then, if we want to remove all of these resources in AWS we can simply run &lt;code&gt;sls remove&lt;/code&gt; in the same directory.  Simple.&lt;/p&gt;
 
-&lt;p&gt;The next step in our service will be another serverless function which checks our SQS queue for messages and handles these messages appropriately.  We&amp;rsquo;ll build this bit in &lt;a href=&#34;#&#34;&gt;the next post of this series&lt;/a&gt;.  See you there!&lt;/p&gt;
+&lt;p&gt;The next step in our project will be another serverless function which checks our SQS queue for messages and handles these messages appropriately.  We&amp;rsquo;ll build this bit in &lt;a href=&#34;https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/&#34;&gt;the next post of this series&lt;/a&gt;.  See you there!&lt;/p&gt;
 </description>
     </item>
     
@@ -227,15 +653,12 @@ functions:
       <guid>https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/</guid>
       <description>
 
-&lt;h1 id=&#34;netflix-voting-service-case-study&#34;&gt;Netflix Voting Service - Case Study&lt;/h1&gt;
-
-&lt;hr /&gt;
-
 &lt;p&gt;This is part 1 of the series.  Feel free to skip around to other sections using the links below.&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/&#34;&gt;Case Study and Grooming&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;Simple API Endpoints with Serverless and Lambda&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/&#34;&gt;Handling SQS Messages with Serverless Functions&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;hr /&gt;
@@ -264,7 +687,7 @@ functions:
 &lt;li&gt;…a Dynamo DB table.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Let&amp;rsquo;s get started!  The [next post]() in this series will go over the first segment of our pipeline: the API gateway and the initial Lambda function.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s get started!  The &lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;next post&lt;/a&gt; in this series will go over the first segment of our pipeline: the API gateway and the initial Lambda function.&lt;/p&gt;
 </description>
     </item>
     

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noodp"/>
+  
+  
+  
+  
+  
+  <link rel="prev" href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/" />
+  
+  <link rel="canonical" href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/" />
+  <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+  <title>
+       
+       
+           Handling SQS Messages with Serverless Functions | Mike Tobias
+       
+  </title>
+  <meta name="title" content="Handling SQS Messages with Serverless Functions | Mike Tobias">
+    
+  
+  <link rel="stylesheet" href="/font/iconfont.css">
+  <link rel="stylesheet" href="/css/main.min.css">
+
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Handling SQS Messages with Serverless Functions"/>
+<meta name="twitter:description" content="Using Serverless functions to collect and handle messages from an AWS SQS queue."/>
+
+  <script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Handling SQS Messages with Serverless Functions",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/"
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://mct-dev.github.io/cover.png",
+    "width": 800,
+    "height": 600
+  },
+  "genre": "posts",
+  
+  "wordcount": 2078,
+  "url": "https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/",
+  "datePublished": "2019-04-18T00:00:00+00:00",
+  "dateModified": "2019-04-18T00:00:00+00:00",
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Mike Tobias",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://mct-dev.github.io/logo.png",
+      "width": 127,
+      "height": 40
+    }
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Mike Tobias"
+  },
+  "description": "Using Serverless functions to collect and handle messages from an AWS SQS queue."
+}
+</script>
+</head>
+
+  
+
+
+  <body class="">
+    <div class="wrapper">
+        <nav class="navbar">
+    <div class="container">
+        <div class="navbar-header header-logo">
+        	<a href="https://mct-dev.github.io">Mike Tobias</a>
+        </div>
+        <div class="menu navbar-right">
+                
+                
+                <a class="menu-item" href="/" title="">Home</a>
+                
+                <a class="menu-item" href="/posts/" title="">Blog</a>
+                
+                <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;
+        </div>
+    </div>
+</nav>
+<nav class="navbar-mobile" id="nav-mobile" style="display: none">
+     <div class="container">
+        <div class="navbar-header">
+            <div>  <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;<a href="https://mct-dev.github.io">Mike Tobias</a></div>
+            <div class="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+     
+          <div class="menu" id="mobile-menu">
+                
+                
+                <a class="menu-item" href="/" title="">Home</a>
+                
+                <a class="menu-item" href="/posts/" title="">Blog</a>
+                
+        </div>
+    </div>
+</nav>
+    	 <main class="main">
+          <div class="container">
+      		
+<article class="post-warp">
+    <header class="post-header">
+        <h1 class="post-title">Handling SQS Messages with Serverless Functions</h1>
+        <div class="post-meta">
+            Written by <a href="https://mct-dev.github.io" rel="author">Mike Tobias</a>
+                <span class="post-time">
+                    on <time datetime=2019-04-18 >18 April 2019</time>
+                </span>
+                <br />
+                
+                <i class="iconfont icon-folder"></i>
+                <span class="post-category">
+                        <a href="https://mct-dev.github.io/categories/aws/"> AWS </a>
+                        
+                </span>
+                <br />
+                <i class="iconfont icon-timer"></i>
+                10 min read
+        </div>
+    </header>
+    <div class="post-content">
+        
+
+        
+
+        
+        
+     
+          
+          
+          
+
+          
+          
+          
+
+          
+
+<p>This is part 3 of the series.  Feel free to skip around to other sections using the links below.</p>
+
+<ol>
+<li><a href="https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/">Case Study and Grooming</a></li>
+<li><a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/">Simple API Endpoints with Serverless and Lambda</a></li>
+<li><a href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/">Handling SQS Messages with Serverless Functions</a></li>
+</ol>
+
+<hr />
+
+<h2 id="objective">Objective</h2>
+
+<p>In our <a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/">last post</a> we set up an API endpoint and a serverless function which will receive voting data, add it to our SQS Queue, then publish to an SNS topic. Now, we need to build a function which will consume messages from this SQS Queue and add them to a database. We&rsquo;ll use DynamoDB for our database because it&rsquo;s scalable, reliable, NoSQL, and integrates well with our pipeline.</p>
+
+<h2 id="the-new-function">The new function</h2>
+
+<p>Let&rsquo;s get right to it. Here&rsquo;s our second function:</p>
+
+<pre><code class="language-javascript">&quot;use strict&quot;;
+const AWS = require(&quot;aws-sdk&quot;);
+const sqs = new AWS.SQS({apiVersion: &quot;2012-11-05&quot;});
+const db = new AWS.DynamoDB.DocumentClient({apiVersion: &quot;2012-08-10&quot;});
+
+AWS.config.update({region: &quot;us-east-1&quot;});
+
+const getQueueUrl = async () =&gt; {
+  let queueUrlResponse = await sqs.getQueueUrl({
+    QueueName: process.env.SQS_QUEUE_NAME
+  }).promise();
+
+  return queueUrlResponse.QueueUrl;
+};
+
+const getMessages = async (queueUrl) =&gt; {
+  let messagesResponse = await sqs.receiveMessage({
+    QueueUrl: queueUrl,
+    WaitTimeSeconds: 5,
+    MaxNumberOfMessages: 10
+  }).promise();
+
+  return messagesResponse &amp;&amp; messagesResponse.Messages
+    ? messagesResponse.Messages
+    : [];
+};
+
+module.exports.handleSqsMessages = async (event) =&gt; {
+  const dbTableName = process.env.DYNAMODB_TABLE;
+  const sqsQueueName = process.env.SQS_QUEUE_NAME;
+  const timestamp = new Date().getTime();
+
+  if (event &amp;&amp; event.Records) {
+    console.log(&quot;Event Records: &quot;, event.Records);
+    let message = event.Records[0].Message;
+    console.log(&quot;Event received.&quot;);
+    console.log(`Event SNS Message: ${message}.`);
+  }
+
+  let canProcessMessages = true;
+  let queueUrl = await getQueueUrl(sqsQueueName);
+
+  if (!queueUrl) {
+    canProcessMessages = false;
+  }
+
+  while (canProcessMessages) {
+    let messages = await getMessages(queueUrl);
+
+    if (!messages || !messages.length) {
+      console.log(`No messages found in queue ${sqsQueueName}.`);
+      canProcessMessages = false;
+      return 0;
+    }
+
+    for (let msg of messages) {
+      let msgId = msg.MessageId;
+      let msgBody = JSON.parse(msg.Body);
+
+      if (!(msgId &amp;&amp; msgBody)) {
+        // go to next message
+        continue;
+      }
+      
+      console.log(`processing message (id: ${msgId})`);
+
+      try {
+        await db.put({
+          TableName: dbTableName,
+          Item: {
+            id: msgId,
+            VoteData: msgBody,
+            createdAt: timestamp,
+            updatedAt: timestamp
+          }
+        }).promise();
+
+        console.log(`DB PUT successful! Message Id: ${msgId}`);
+      } catch (err) {
+        console.error(`DB PUT failed! Message Id: ${msgId}. Error: ${err}`);
+        return 1;
+      }
+
+      try {
+        await sqs.deleteMessage({
+          QueueUrl: queueUrl,
+          ReceiptHandle: msg.ReceiptHandle
+        }).promise();
+
+        console.log(`Message deleted from SQS Queue. Queue URL: ${queueUrl} | Message Receipt Handle: ${msg.ReceiptHandle}`);
+      } catch (err) {
+        console.error(`Message deletion FAILED. Message Receipt Handle: ${msg.ReceiptHandle}. Error: ${err}`);
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+};
+&quot;use strict&quot;;
+const AWS = require(&quot;aws-sdk&quot;);
+const sqs = new AWS.SQS({apiVersion: &quot;2012-11-05&quot;});
+const db = new AWS.DynamoDB.DocumentClient({apiVersion: &quot;2012-08-10&quot;});
+
+AWS.config.update({region: &quot;us-east-1&quot;});
+
+const getQueueUrl = async () =&gt; {
+  let queueUrlResponse = await sqs.getQueueUrl({
+    QueueName: process.env.SQS_QUEUE_NAME
+  }).promise();
+
+  return queueUrlResponse.QueueUrl;
+};
+
+const getMessages = async (queueUrl) =&gt; {
+  let messagesResponse = await sqs.receiveMessage({
+    QueueUrl: queueUrl,
+    WaitTimeSeconds: 5,
+    MaxNumberOfMessages: 10
+  }).promise();
+
+  return messagesResponse &amp;&amp; messagesResponse.Messages
+    ? messagesResponse.Messages
+    : [];
+};
+
+module.exports.handleSqsMessages = async (event) =&gt; {
+  const dbTableName = process.env.DYNAMODB_TABLE;
+  const sqsQueueName = process.env.SQS_QUEUE_NAME;
+  const timestamp = new Date().getTime();
+
+  if (event &amp;&amp; event.Records) {
+    console.log(&quot;Event Records: &quot;, event.Records);
+    let message = event.Records[0].Message;
+    console.log(&quot;Event received.&quot;);
+    console.log(`Event SNS Message: ${message}.`);
+  }
+
+  let canProcessMessages = true;
+  let queueUrl = await getQueueUrl(sqsQueueName);
+
+  if (!queueUrl) {
+    canProcessMessages = false;
+  }
+
+  while (canProcessMessages) {
+    let messages = await getMessages(queueUrl);
+
+    if (!messages || !messages.length) {
+      console.log(`No messages found in queue ${sqsQueueName}.`);
+      canProcessMessages = false;
+      return 0;
+    }
+
+    for (let msg of messages) {
+      let msgId = msg.MessageId;
+      let msgBody = JSON.parse(msg.Body);
+
+      if (!(msgId &amp;&amp; msgBody)) {
+        // go to next message
+        continue;
+      }
+      
+      console.log(`processing message (id: ${msgId})`);
+
+      try {
+        await db.put({
+          TableName: dbTableName,
+          Item: {
+            id: msgId,
+            VoteData: msgBody,
+            createdAt: timestamp,
+            updatedAt: timestamp
+          }
+        }).promise();
+
+        console.log(`DB PUT successful! Message Id: ${msgId}`);
+      } catch (err) {
+        console.error(`DB PUT failed! Message Id: ${msgId}. Error: ${err}`);
+        return 1;
+      }
+
+      try {
+        await sqs.deleteMessage({
+          QueueUrl: queueUrl,
+          ReceiptHandle: msg.ReceiptHandle
+        }).promise();
+
+        console.log(`Message deleted from SQS Queue. Queue URL: ${queueUrl} | Message Receipt Handle: ${msg.ReceiptHandle}`);
+      } catch (err) {
+        console.error(`Message deletion FAILED. Message Receipt Handle: ${msg.ReceiptHandle}. Error: ${err}`);
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+};
+
+</code></pre>
+
+<p>So what are we working with here? We&rsquo;ve got a couple &ldquo;helper&rdquo; functions at the top for getting the SQS queue URL and retrieving messages from this queue. Then, we&rsquo;ve got the main function. In there, we&rsquo;re really only doing a few things: logging the event that triggered this function (using <code>console.log</code>), collecting messages from the SQS queue, adding all messages found to our database, then deleting all the messages we&rsquo;ve processed from the SQS queue. Let&rsquo;s go over it a little more in detail.</p>
+
+<p>First we first collect our databse table name and SQS queue name from our environment variables. You&rsquo;ll notice the <code>DYNAMODB_TABLE</code> environment variable is a new one. We&rsquo;ve added that to the <code>serverless.yml</code> file, which well see in a moment. We also establish a timestamp which we can use later on in the function.</p>
+
+<p>Next, we log the event <code>Records</code> if any are found. This is only used for tracking purposes. By adding a few of these <code>console.log</code> statements throughout our function, we are then able to look into our logs in AWS CloudWatch to see a detailed accounting of what happened when this function ran.  The <code>Records</code> object will exist only if the function was triggered by an SNS publish.</p>
+
+<p>Now we collect our SQS queue URL and begin processing messages. Assuming a queue URL was returned, we&rsquo;ll establish a loop which only closes when we decide we can no longer process messages (<code>canProcessMessages=false</code>). In the loop, we grab the messages using our <code>getMessages</code> function. If this returns no messages, we stop the loop and the function ends.  However, if it returns some messages we process each one of them. This means collecting the <code>MessageId</code> and the message <code>Body</code>, then running a <code>PUT</code> to our dynamoDB table. The format of the object we pass to this <code>db.put</code> is important. You can find more info about this formatting in the <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#put-property">nodejs aws-sdk docs</a>.</p>
+
+<p>If any errors were hit on our way to this point, we&rsquo;ve logged them to AWS CloudWatch and returned a non-zero value, ending the function.  But, if we made it this far without errors, we delete the message from our SQS queue and then we&rsquo;re done!</p>
+
+<h2 id="the-updated-yaml-file">The updated yaml file</h2>
+
+<p>So, now comes the second major part of this segment of our pipeline: the <code>serverless.yml</code> file. Here&rsquo;s the updated version. Take a quick read.</p>
+
+<pre><code class="language-yaml">service: voting-app
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  environment:
+    DYNAMODB_TABLE: ${file(../voting-db/serverless.yml):service}-${self:provider.stage}-table
+    SQS_QUEUE_NAME: ${self:service}-${self:provider.stage}-queue
+    SNS_TOPIC: ${self:service}-${self:provider.stage}-topic
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - SQS:*
+      Resource: {&quot;Fn::Join&quot; : [&quot;&quot;, [&quot;arn:aws:sqs:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SQS_QUEUE_NAME}&quot; ] ] }
+    - Effect: Allow
+      Action:
+        - dynamoDB:*
+      Resource: {&quot;Fn::Join&quot; : [&quot;&quot;, [&quot;arn:aws:dynamodb:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:table/${self:provider.environment.DYNAMODB_TABLE}&quot; ] ] }
+    - Effect: Allow
+      Action:
+        - SNS:*
+      Resource: {&quot;Fn::Join&quot;:[&quot;&quot;, [&quot;arn:aws:sns:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SNS_TOPIC}&quot;]]}
+
+functions:
+  post-vote:
+    handler: post-vote.postVote
+    events:
+      - http:
+          path: vote
+          method: post
+    environment:
+      SNS_TOPIC_ARN: {&quot;Fn::Join&quot;:[&quot;&quot;, [&quot;arn:aws:sns:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SNS_TOPIC}&quot;]]}
+  handle-votes:
+    handler: handle-votes.handleSqsMessages
+    events:
+      - schedule: rate(1 minute)
+      - sns: ${self:provider.environment.SNS_TOPIC}
+
+resources:
+  Resources:
+    VotesQueue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: ${self:provider.environment.SQS_QUEUE_NAME}
+</code></pre>
+
+<p>The new additions to point out here are not many. We&rsquo;ve added the new environment variable, <code>DYNAMODB_TABLE</code>. We added a new <code>iamRoleStatement</code> which allows our functions access to dynamoDB.  And we added a new <code>handle-votes</code> section in our <code>functions</code>. This is the interesting bit!  This function has 2 <code>events</code> set up for it.  One of these events is a <code>schedule</code> which will trigger the function every &ldquo;1 minute&rdquo;.  This is probably excessive, and could be increased to a larger amount of time in production.  The idea with this schedule is just to have the function run some &ldquo;cleanup&rdquo; every now and then to make sure that all of our SQS messages get handled.  However, we should be able to rely on the next event to do most of the work here.  The <code>sns</code> event will subscribe our <code>handle-votes</code> function to a specific SNS Topic, which we&rsquo;ve provided by referencing an environment variable in this file.  Since the function is subscribed, it will be triggered when our <em>first</em> function (<code>post-vote</code>) publishes a message to this topic.</p>
+
+<p>That&rsquo;s all for this file!  But what about DynamoDB?  We aren&rsquo;t creating that resource here, are we?  Correct!  The reason we don&rsquo;t include databases here is that, in a production environment, databases usually exist already or at least won&rsquo;t be changed very often.  This serverless file is designed so that you can create, update, and destroy all of these resources and services at will. This isn&rsquo;t the approach you&rsquo;d want to take with your data, however.</p>
+
+<p>If you did want to create a Dynamo database and table using serverless, maybe for testing purposes, you can still do that!  Serverless has the power!  The best plan here would be to create a new <code>serverless.yml</code> file somewhere <strong>outside</strong> of your <code>voting-functions</code> directory.  The idea is to have a different area where you can run your <code>serverless</code> command in the terminal, so that when you update your Lambda functions and other resources you won&rsquo;t also try to re-deploy your DynamoDB table when you update these functions using <code>serverless deploy</code>.  So, what would that new file look like for creating your database?  Here you go:</p>
+
+<pre><code class="language-yaml">service: voting-db
+
+custom:
+  tableName: ${self:service}-${self:provider.stage}-table
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+
+resources:
+  Resources:
+    VotesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}
+</code></pre>
+
+<p>A few sections here probably look familiar to you.  The resources section creates our resources and in it we&rsquo;ve established our <code>VotesDynamoDbTable</code>.  Tables in DynamoDB require at least 1 <code>Key</code> to serve as the primary key.  This is created by first establishing an <code>AttributeDefinition</code> and then creating our <code>KeySchema</code> which references the name of our newly created Attribute.  We then provide the <code>TableName</code> at the end.  Check out the <a href="https://github.com/serverless/examples/blob/master/aws-node-rest-api-with-dynamodb/serverless.yml">serverless examples repo</a> for more examples of using dynamodb with the serverless framework.</p>
+
+<p>We also use a new section here called <code>custom</code>.  This is a good area for you to define local variables for your file. Since this new serverless service doesn&rsquo;t need to use the dynamoDB table name anywhere else, we can just put it in this <code>custom</code> section for reference within this file.</p>
+
+<p>Now, you can run <code>serverless deploy</code> in this directory to create this DynamoDB table!</p>
+
+<h2 id="other-thoughts">Other thoughts</h2>
+
+<p>One thought you may have had while reading this is:</p>
+
+<blockquote>
+<p>What if we fail to delete the SQS message after processing it? Wouldn&rsquo;t we end up adding a duplicate to the database later on?</p>
+</blockquote>
+
+<p>No. The <code>MessageId</code> value provided by each message from our SQS queue will remain the same if we fail to delete that item. We will, indeed, end up collecting this message again later on, but since we&rsquo;re using this value as our primary key in the DynamoDB table we&rsquo;d avoid duplicating it.  When you try to put a record in a DynamoDB table and the record&rsquo;s primary key already exists, DyanmoDB will wimply simply <a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutItem.html">overwrite the old item with the new</a> one. Since the data from our SQS message will not have changed, this would be alright with us!</p>
+
+<h2 id="finishing-up">Finishing Up</h2>
+
+<p>We have now successfully built our pipeline!  To sum it all up, we now have:
+* An API endpoint where a client can submit voting data.
+* A serverless Lambda function which will accept data from this endpoint, add it to a SQS queue, and publish an SNS message.
+* Another serverless Lambda function which will trigger when a message is published to this SNS topic OR on a timed schedule. This function will collect votes from the SQS queue, add them to a DynamoDB table, and then delete them from the queue.
+* A DynamoDB table to store the voting data.</p>
+
+<p>This pipeline is extremely scalable and can be created, updated, and deleted at the push of a button! You can try it now by cloning <a href="https://github.com/mct-dev/voting-app">this repo</a> and running <code>npm deploy</code>. To remove all of these resources from AWS, just run <code>npm run remove</code>.  Keep in mind that you&rsquo;ll need to be authenticated to your AWS account for any of this to work.  You can find out how to do this <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html">here</a>.</p>
+
+<p>One important note: if you&rsquo;re creating your database with the serverless template I&rsquo;ve shown above, you won&rsquo;t be able to remove it with a <code>serverless remove</code> command.  This is for all the same &ldquo;data integrity&rdquo; and safety reasons as we mentioned before.  AWS won&rsquo;t let you destroy database things without you explicitly telling it to do so.</p>
+
+<p>And with that, I think that&rsquo;ll do it for now.  If you&rsquo;re still reading, I appreciate you sticking it out.  Be sure to check in for the next one.  I&rsquo;ll make sure we build something even cooler. :)</p>
+
+    </div>
+
+    
+
+  
+    <div class="post-tags">
+        
+        <section>
+                <a href="javascript:window.history.back();">Back</a></span> · 
+                <span><a href="https://mct-dev.github.io">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+        
+        <a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/" class="prev" rel="prev" title="Simple API Endpoints with Serverless and Lambda"><i class="iconfont icon-dajiantou"></i>&nbsp;Simple API Endpoints with Serverless and Lambda</a>
+         
+        
+    </div>
+
+    <div class="post-comment">
+          
+          
+          
+    </div>
+</article>
+          </div>
+		   </main>
+      <footer class="footer">
+    <div class="copyright">
+        &copy;
+        
+         
+            <span class="author" itemprop="copyrightHolder"><a href="https://mct-dev.github.io">Mike Tobias</a></span>
+         
+
+		  
+    </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    <script src="/js/vendor_no_gallery.min.js" async=""></script>
+    
+  
+
+
+
+
+
+
+
+     </div>
+  </body>
+</html>

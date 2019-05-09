@@ -11,7 +11,7 @@
   
   
   <link rel="prev" href="https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/" />
-  
+  <link rel="next" href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/" />
   <link rel="canonical" href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/" />
   <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -45,36 +45,36 @@
   "headline": "Simple API Endpoints with Serverless and Lambda",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https:\/\/mct-dev.github.io\/posts\/simple-api-endpoints-with-serverless-and-lambda\/"
+    "@id": "https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/"
   },
   "image": {
     "@type": "ImageObject",
-    "url": "https:\/\/mct-dev.github.io\/cover.png",
-    "width":  800 ,
-    "height":  600 
+    "url": "https://mct-dev.github.io/cover.png",
+    "width": 800,
+    "height": 600
   },
   "genre": "posts",
   
-  "wordcount":  1846 ,
-  "url": "https:\/\/mct-dev.github.io\/posts\/simple-api-endpoints-with-serverless-and-lambda\/",
-  "datePublished": "2019-04-16T00:00:00\x2b00:00",
-  "dateModified": "2019-04-16T00:00:00\x2b00:00",
+  "wordcount": 2375,
+  "url": "https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/",
+  "datePublished": "2019-04-16T00:00:00+00:00",
+  "dateModified": "2019-04-16T00:00:00+00:00",
   
   "publisher": {
     "@type": "Organization",
     "name": "Mike Tobias",
     "logo": {
       "@type": "ImageObject",
-      "url": "https:\/\/mct-dev.github.io\/logo.png",
-      "width":  127 ,
-      "height":  40 
+      "url": "https://mct-dev.github.io/logo.png",
+      "width": 127,
+      "height": 40
     }
   },
   "author": {
     "@type": "Person",
     "name": "Mike Tobias"
   },
-  "description": "Using AWS Lambda and the Serverless Framework to build platform-agnostic API\x27s and serverless functions."
+  "description": "Using AWS Lambda and the Serverless Framework to build platform-agnostic API&#39;s and serverless functions."
 }
 </script>
 </head>
@@ -139,7 +139,7 @@
                 </span>
                 <br />
                 <i class="iconfont icon-timer"></i>
-                9 min read
+                12 min read
         </div>
     </header>
     <div class="post-content">
@@ -162,15 +162,12 @@
 
           
 
-<h1 id="simple-api-endpoints-with-serverless-and-lambda">Simple API Endpoints with Serverless and Lambda</h1>
-
-<hr />
-
 <p>This is part 2 of the series.  Feel free to skip around to other sections using the links below.</p>
 
 <ol>
 <li><a href="https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/">Case Study and Grooming</a></li>
 <li><a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/">Simple API Endpoints with Serverless and Lambda</a></li>
+<li><a href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/">Handling SQS Messages with Serverless Functions</a></li>
 </ol>
 
 <hr />
@@ -197,11 +194,11 @@
 
 <p>First, we&rsquo;ll install the Serverless Framework.  There&rsquo;s some great directions on how you can do that <a href="https://serverless.com/framework/docs/getting-started/">here</a>, but essentially all you&rsquo;ll be doing is running <code>npm install -g serverless</code>.  This will install the cli tools for the framework, accessible through the <code>sls</code> or <code>serverless</code> commands.</p>
 
-<p>Now we can initialize a new project directory and create our serverless functions.  First, create a root project directory for yourself.  Mine will be <code>~/projects/voting-service/</code>. I also chose to add a subdirectory in this root folder called <code>serverless-functions</code>, just to keep the serverless portion of this service separated.  I&rsquo;ll use this location to store all of my Lambda functions for the project.  So, let&rsquo;s <code>cd</code> into this directory and run the below command.</p>
+<p>Now we can initialize a new project directory and create our serverless functions.  First, create a root project directory for yourself.  Mine will be <code>~/projects/voting-project/</code>. I also chose to add a subdirectory in this root folder called <code>serverless-functions</code>, just to keep the serverless portion of this service separated.  I&rsquo;ll use this location to store all of my Lambda functions for the project.  So, let&rsquo;s <code>cd</code> into this directory and run the below command.</p>
 
 <p><code>sls create —template aws-nodejs —path voting-service</code></p>
 
-<p>This command will create all of the necessary files for your serverless function, using a Node.js template.  Let&rsquo;s open the <code>handler.js</code> file (full path: <code>~/projects/voting-service/serverless-functions/voting-service/handler.js</code>). This file contains some boilerplate code for a Node.js lambda function:</p>
+<p>This command will create all of the necessary files for your serverless function, using a Node.js template.  Let&rsquo;s open the <code>handler.js</code> file (full path: <code>~/projects/voting-project/serverless-functions/voting-service/handler.js</code>). This file contains some boilerplate code for a Node.js lambda function:</p>
 
 <pre><code class="language-javascript">// handler.js
 'use strict';
@@ -275,70 +272,127 @@ module.exports.postVote = async (event) =&gt; {
 
 <p>Ok, now let&rsquo;s throw some useful code in this file.  Currently, our function simply accepts the <code>event</code> object provided by the API endpoint and returns an object with a <code>200</code> status code and a <code>body</code> property containing a simple message and the <code>event</code> object.  Let&rsquo;s update this so that, instead, we collect our voting data from the <code>event</code> parameter and add this voting data to a specific SQS queue.</p>
 
-<pre><code class="language-javascript">// post-vote.js
-'use strict';
-const AWS = require('aws-sdk');
+<pre><code class="language-javascript">&quot;use strict&quot;;
+const AWS = require(&quot;aws-sdk&quot;);
+const parseEventData = (apiEventData) =&gt; {
 
-AWS.config.update({region: 'us-east-1'});
+  // data should be passed in through query string params
+  if (apiEventData.queryStringParameters) {
+    return apiEventData.queryStringParameters;
+  }
+
+  return null;
+};
+
+AWS.config.update({region: &quot;us-east-1&quot;});
 
 module.exports.postVote = async (event, context) =&gt; {
-  let sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+  const sqs = new AWS.SQS({apiVersion: &quot;2012-11-05&quot;});
+  const sns = new AWS.SNS({apiVersion: &quot;2010-03-31&quot;});
   let voteQueueUrl;
-  let sqsMessageResponse;
+  let voteData;
 
-  try {
-    voteQueueUrl = await sqs.getQueueUrl({
-        QueueName: 'voting-app-queue',
-    }).promise();
-    sqsMessageResponse = await sqs.sendMessage({
-      MessageBody: JSON.stringify(event),
-      QueueUrl: voteQueueUrl.QueueUrl
-    }).promise()
-  }
-  catch (err) {
+  voteData = parseEventData(event);
+
+  if (!voteData) {
     return {
       statusCode: 500,
-      body: JSON.stringify(err)
-    }
+      isBase64Encoded: false,
+      headers: {
+        &quot;Content-Type&quot;: &quot;text/plain&quot;
+      },
+      body: JSON.stringify({
+        awsRequestId: context.awsRequestId,
+        error: {
+          message: &quot;No query string parameters were found!&quot;
+        },
+        input: event
+      })
+    };
+
   }
+  
+  try {
+    voteQueueUrl = await sqs.getQueueUrl({
+      QueueName: process.env.SQS_QUEUE_NAME,
+    }).promise();
+  
+    await sqs.sendMessage({
+      MessageBody: JSON.stringify(voteData),
+      QueueUrl: voteQueueUrl.QueueUrl
+    }).promise();
+    console.log(&quot;SQS message sent successfully!&quot;);
+  } catch (err) {
+    console.error(`SQS message send FAILED. Error: ${err}`);
+  }
+
+  // notify our second function that there's a new vote to handle
+  try {
+    await sns.publish({
+      Message: &quot;New Vote Posted!&quot;,
+      TopicArn: process.env.SNS_TOPIC_ARN
+    });
+    console.log(&quot;SNS published successfully!&quot;);
+  } catch (err) {
+    console.error(`SQS message send FAILED. Error: ${err}`);
+  }
+
+
   return {
     statusCode: 200,
+    headers: {
+      &quot;Content-Type&quot;: &quot;text/plain&quot;
+    },
+    isBase64Encoded: false,
     body: JSON.stringify({
-      voteQueueUrl,
-      sqsMessageResponse,
-      input: event,
-    }),
+      awsRequestId: context.awsRequestId,
+      message: &quot;Vote successfully processed.&quot;,
+      input: event
+    })
   };
 };
+
 </code></pre>
 
-<p>A couple of things to go over here.  First, the AWS SDK is made available in Lambda to any programming language that needs it.  In Nodejs, this is the <code>aws-sdk</code> package.  This package allows us to access other AWS services, in this case the SQS service.  Also, when using the AWS SDK, we always want to specify the region we&rsquo;re working in as well as a specific API version for the service that we use.  We&rsquo;ve done that here near the top of the file.  Let&rsquo;s go over the code in a bit more detail.</p>
+<p>A couple of things to go over here.  First, the AWS SDK is made available in Lambda to all supported languages.  In Nodejs, this is the <code>aws-sdk</code> package.  This package allows us to access other AWS services, in this case the SQS service.  Also, when using the AWS SDK, we always want to specify the region we&rsquo;re working in as well as a specific API version for the service that we use.  We&rsquo;ve done that here near the top of the file.  Let&rsquo;s go over the code in a bit more detail.</p>
 
-<p>We first create a new <code>AWS.SQS</code> object, specifying its most recent API version.  Then, we collect the <code>QueueUrl</code> for a SQS Queue named <code>voting-app-queue</code>.  This is a SQS queue that I&rsquo;ve created directly through the AWS management console.  You can use the AWS SDK to create a queue, but we don&rsquo;t necessarily need to programmatically create a queue in this scenario, so I just created one by hand.  Once we have this URL, we can add messages to our queue!  So, the next step (<code>sqs.sendMessage</code>) sends a message to our QueueUrl adding the <code>event</code> as the MessageBody.</p>
+<p>First, we require the <code>aws-sdk</code> and establish a function for parsing the event data (provided by the API endpoint).  Our endpoint will be set up with &ldquo;Lambda Proxy&rdquo; enabled by default, which means the <code>event</code> object passed in to our function will have quite a bit of information in it.  This also means that our response from this function needs to have a <code>body</code> which is formatted properly.  We&rsquo;ll just use the <code>JSON.stringify()</code> method for this.</p>
 
-<p>Another cool thing to point out here is the <code>async</code> / <code>await</code> syntax.  Lambda supports more recent versions of Nodejs, which allows us to use this syntax to handle promises.  This makes our code much cleaner, avoiding lots of callbacks and such, especially while dealing with the AWS SDK - most things in there will be asynchronous calls, and can be made into a Nodejs <code>Promise</code> by calling the <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html#promise-property"><code>.promise()</code></a> function on the <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html"><code>AWS Request</code></a> object (returned by <code>getQueueUrl</code> and <code>sendMessage</code> in our case).</p>
+<p>We then set up a quick function for processing the data from our <code>event</code> object.  In our case, all we want to do is make sure that <code>event</code> <em>is</em> an object and that it contains the <code>queryStringParameters</code> property.  This is where our voting data should be found.  If these things aren&rsquo;t available, we&rsquo;ll just throw an error with a quick message explaining that the voting data was not passed in correctly to the API endpoint.  This error can be caught in our <code>async</code> function and returned to the client with an appropriate status code.  But if all goes well, we&rsquo;ll return the <code>queryStringParameters</code>.</p>
 
-<p>This function is also associated with an API endpoint, so we want to make sure we return something to that API call.  In this case, if something goes wrong while dealing with our SQS service, we&rsquo;ll return a <code>500</code> error code (&ldquo;Internal Server Error&rdquo;) as well as the error details.  We could probably also add some more checks in this function to verify the data, returning different error codes if needed, but for now this will do just fine.  If all goes well in our function, we&rsquo;ll have successfully added a message to the SQS queue and we return a <code>200</code> status and some information about our queue and the message we sent.</p>
+<p>In our main function, <code>postVote</code>, we first initialize the SQS and <code>SNS</code> objects and initialize the variables we&rsquo;ll use in this function.  Then, we get our voting data from the <code>event</code> parameter, using the function we created.  If the no voting data was found, we&rsquo;ll return a <code>400</code> status code and the error as a property of <code>body</code>. If we do have data, we&rsquo;ll continue by collecting the URL of our SQS queue and then adding a new message to this queue.  This bit will be in a try / catch block so that, if we hit any problems here, we can log an error message with the details.  After this, we&rsquo;ll publish an SNS message.  This will serve as one of the triggers for our next lambda function.  This other function will be subscribed to this SNS topic and will be triggered whenever we publish to that topic.  Again, we surround the publishing of the SNS message in a try / catch so that we can log a specific error if something goes wrong with this part.  Finally, if we ran everything successfully in our main <code>postVote</code> function, we&rsquo;ll return a 200 status and a success message in the body.</p>
+
+<hr />
+
+<p>An important thing to note in our above code is that most functions in the AWS SDK will be asynchronous calls, and can be made into a Nodejs <code>Promise</code> by calling the <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html#promise-property"><code>.promise()</code></a> function on the <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html"><code>AWS Request</code></a> object (returned by <code>getQueueUrl</code> and <code>sendMessage</code> in our case).  This returns a <code>Promise</code> instead of using the callback, which allows us to use <code>async</code> and <code>await</code> to write cleaner code!</p>
+
+<hr />
 
 <h2 id="permissions">Permissions</h2>
 
-<p>If you&rsquo;ve worked in AWS before, you&rsquo;ll know that we need to set up some permissions here. Our Lambda function will have a couple of permissions by default - logging to CloudWatch, for example - but it won&rsquo;t have the ability to do things in SQS unless we explicitly give those permissions to it.  This is done through &ldquo;Roles&rdquo; in AWS.</p>
+<p>If you&rsquo;ve worked in AWS before, you&rsquo;ll know that we need to set up some permissions here in order for these functions to run properly. Our Lambda function will have a couple of permissions by default - logging to CloudWatch, for example, which is done with the <code>console.log</code> statements - but it won&rsquo;t have the ability to do things in SQS or SNS unless we explicitly give those permissions to it.  This is done through IAM Roles.</p>
 
-<p>With the Serverless framework, we can set up a role within our code.  This makes management of the service as a whole much easier.  To do this, we&rsquo;ll open up the <code>serverless.yml</code> file again and make a minor change.  Here&rsquo;s the result:</p>
+<p>With the Serverless framework, we can set up a role within our code.  This makes management of the service as a whole much easier.  To do this, we&rsquo;ll open up the <code>serverless.yml</code> file again and make some changes.  Here&rsquo;s the result:</p>
 
-<pre><code class="language-yaml"># serverless.yml
-service: voting-app
+<pre><code class="language-yaml">service: voting-app
 
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: dev
-  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  environment:
+    SQS_QUEUE_NAME: ${self:service}-${self:provider.stage}-queue
+    SNS_TOPIC: ${self:service}-${self:provider.stage}-topic
   iamRoleStatements:
-    - Effect: &quot;Allow&quot;
+    - Effect: Allow
       Action:
-        - sqs:*
-      Resource: &quot;*&quot;
+        - SQS:*
+      Resource: {&quot;Fn::Join&quot; : [&quot;&quot;, [&quot;arn:aws:sqs:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SQS_QUEUE_NAME}&quot; ] ] }
+    - Effect: Allow
+      Action:
+        - SNS:*
+      Resource: {&quot;Fn::Join&quot;:[&quot;&quot;, [&quot;arn:aws:sns:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SNS_TOPIC}&quot;]]}
 
 functions:
   post-vote:
@@ -347,9 +401,24 @@ functions:
       - http:
           path: vote
           method: post
+    environment:
+      SNS_TOPIC_ARN: {&quot;Fn::Join&quot;:[&quot;&quot;, [&quot;arn:aws:sns:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SNS_TOPIC}&quot;]]}
+
+resources:
+  Resources:
+    VotesQueue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: ${self:provider.environment.SQS_QUEUE_NAME}
 </code></pre>
 
-<p>With the <code>iamRoleStatements</code> section, we are able to define the AWS Roles that we want our functions to assume.  Here we&rsquo;ve added a role which allows our function to take <em>any</em> action on <em>any</em> SQS resource.  You can check <a href="https://serverless.com/framework/docs/providers/aws/guide/iam/">here</a> for more information on how to set up roles in the Serverless Framework.</p>
+<p>The first thing you&rsquo;ve probably noticed is a lot of these: <code>{}</code>.  What&rsquo;s going on here? Well, in the serverless yaml files you can use variables and functions!  Take a quick look <a href="https://serverless.com/framework/docs/providers/aws/guide/variables/">here</a> to get a good idea on how variables work, and <a href="https://theserverlessway.com/aws/cloudformation/template-functions/">here</a> for a nice blog post on the functions.  Using variables and functions allows us to avoid repeating ourselves - see the <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY Policy</a> - and also helps keep our naming conventions all the same throughout our pipeline.</p>
+
+<p>The <code>iamRoleStatements</code> section is where we establish our IAM Roles.  These roles allow our Lambda functions to interact with SQS and SNS.  Here we&rsquo;ve just said &ldquo;Let our service access this specific resource and take any action on it&rdquo; for both SQS and SNS. The resources in question are established at the <code>Resource</code> fields, where we build an AWS ARN which will specifically point to our SNS Topic and SQS Queue.</p>
+
+<p>We&rsquo;ve also added <em>environment variables</em> here for the SQS queue name and the SNS topic name.  These environment variables can be accessed at runtime by our functions!  You may have noticed in our function code above that we are collecting the SQS queue name and SNS topic name from <code>process.env</code>.  The variables we establish here in the <code>environment</code> section end up in that <code>process.env</code> object!</p>
+
+<p>The last important bit in this file is the <code>resources</code> section.  This section will create actual AWS resources for us when we run our serverless service!   Here we create a SQS Queue, collecting the Queue Name from our environment variable at the top of the file.</p>
 
 <h2 id="finishing-up">Finishing Up</h2>
 
@@ -359,9 +428,9 @@ functions:
 
 <p>The returned string of JSON doesn&rsquo;t look pretty, but it does show that the function is working properly.  If you had trouble running this locally, you&rsquo;ll likely have to <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html">configure your aws cli</a> so that the AWS SDK we&rsquo;re using can access your AWS resources.</p>
 
-<p>We can now run <code>sls deploy</code> within our <code>/serverless-functions/voting-service/</code> directory and it will deploy everything that we need into AWS, permissions and all!  Then, if we want to remove all of these resources in AWS we can simply run <code>sls remove</code> in the same directory.  Simple.</p>
+<p>To deploy this to AWS, we run <code>sls deploy</code> within our <code>/serverless-functions/voting-service/</code> directory.  This will deploy everything that we need into AWS, permissions and all!  Then, if we want to remove all of these resources in AWS we can simply run <code>sls remove</code> in the same directory.  Simple.</p>
 
-<p>The next step in our service will be another serverless function which checks our SQS queue for messages and handles these messages appropriately.  We&rsquo;ll build this bit in <a href="#">the next post of this series</a>.  See you there!</p>
+<p>The next step in our project will be another serverless function which checks our SQS queue for messages and handles these messages appropriately.  We&rsquo;ll build this bit in <a href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/">the next post of this series</a>.  See you there!</p>
 
     </div>
 
@@ -380,6 +449,8 @@ functions:
         
         <a href="https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/" class="prev" rel="prev" title="Netflix Voting Service - Case Study"><i class="iconfont icon-dajiantou"></i>&nbsp;Netflix Voting Service - Case Study</a>
          
+        
+        <a href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/" class="next" rel="next" title="Handling SQS Messages with Serverless Functions">Handling SQS Messages with Serverless Functions&nbsp;<i class="iconfont icon-xiaojiantou"></i></a>
         
     </div>
 
