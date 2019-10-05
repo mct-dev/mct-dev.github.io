@@ -170,11 +170,11 @@
 
 <hr />
 
-<h2 id="case-study">Case Study</h2>
+<h4 id="case-study">Case Study</h4>
 
 <p>We are working at Netflix.  Yep, you and me both.  Our company, Netflix, has recently implemented their voting functionality where users can vote on different aspects of the show or movie they just watched.  We have been tasked with creating a pipeline which can receive and process an extremely large number of these votes in the most efficient, scalable, and cost effective way possible.</p>
 
-<h2 id="grooming">Grooming</h2>
+<h4 id="grooming">Grooming</h4>
 
 <p>In this scenario, we can assume that the data will be passed from the front end as JSON.  The JSON will have a particular structure and we will have to provide a URL endpoint where the JSON can be sent.  Since the quantity of votes received per second or minute may change dramatically based on time of day or any number of other factors, we likely do not want to have a powerful server running all the time waiting to collect these votes.  This seems like an ideal situation for an <a href="https://aws.amazon.com/api-gateway/">AWS API Gateway</a> connected to 1 or more serverless <a href="https://aws.amazon.com/lambda/">Lambda</a> functions.</p>
 

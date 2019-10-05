@@ -170,11 +170,11 @@
 
 <hr />
 
-<h2 id="objective">Objective</h2>
+<h4 id="objective">Objective</h4>
 
 <p>In our <a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/">last post</a> we set up an API endpoint and a serverless function which will receive voting data, add it to our SQS Queue, then publish to an SNS topic. Now, we need to build a function which will consume messages from this SQS Queue and add them to a database. We&rsquo;ll use DynamoDB for our database because it&rsquo;s scalable, reliable, NoSQL, and integrates well with our pipeline.</p>
 
-<h2 id="the-new-function">The new function</h2>
+<h4 id="the-new-function">The new function</h4>
 
 <p>Let&rsquo;s get right to it. Here&rsquo;s our second function:</p>
 
@@ -389,7 +389,7 @@ module.exports.handleSqsMessages = async (event) =&gt; {
 
 <p>If any errors were hit on our way to this point, we&rsquo;ve logged them to AWS CloudWatch and returned a non-zero value, ending the function.  But, if we made it this far without errors, we delete the message from our SQS queue and then we&rsquo;re done!</p>
 
-<h2 id="the-updated-yaml-file">The updated yaml file</h2>
+<h4 id="the-updated-yaml-file">The updated yaml file</h4>
 
 <p>So, now comes the second major part of this segment of our pipeline: the <code>serverless.yml</code> file. Here&rsquo;s the updated version. Take a quick read.</p>
 
@@ -482,7 +482,7 @@ resources:
 
 <p>Now, you can run <code>serverless deploy</code> in this directory to create this DynamoDB table!</p>
 
-<h2 id="other-thoughts">Other thoughts</h2>
+<h4 id="other-thoughts">Other thoughts</h4>
 
 <p>One thought you may have had while reading this is:</p>
 
@@ -492,7 +492,7 @@ resources:
 
 <p>No. The <code>MessageId</code> value provided by each message from our SQS queue will remain the same if we fail to delete that item. We will, indeed, end up collecting this message again later on, but since we&rsquo;re using this value as our primary key in the DynamoDB table we&rsquo;d avoid duplicating it.  When you try to put a record in a DynamoDB table and the record&rsquo;s primary key already exists, DyanmoDB will wimply simply <a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutItem.html">overwrite the old item with the new</a> one. Since the data from our SQS message will not have changed, this would be alright with us!</p>
 
-<h2 id="finishing-up">Finishing Up</h2>
+<h4 id="finishing-up">Finishing Up</h4>
 
 <p>We have now successfully built our pipeline!  To sum it all up, we now have:
 * An API endpoint where a client can submit voting data.

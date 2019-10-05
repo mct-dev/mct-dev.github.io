@@ -27,11 +27,11 @@
 
 &lt;hr /&gt;
 
-&lt;h2 id=&#34;objective&#34;&gt;Objective&lt;/h2&gt;
+&lt;h4 id=&#34;objective&#34;&gt;Objective&lt;/h4&gt;
 
 &lt;p&gt;In our &lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;last post&lt;/a&gt; we set up an API endpoint and a serverless function which will receive voting data, add it to our SQS Queue, then publish to an SNS topic. Now, we need to build a function which will consume messages from this SQS Queue and add them to a database. We&amp;rsquo;ll use DynamoDB for our database because it&amp;rsquo;s scalable, reliable, NoSQL, and integrates well with our pipeline.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-new-function&#34;&gt;The new function&lt;/h2&gt;
+&lt;h4 id=&#34;the-new-function&#34;&gt;The new function&lt;/h4&gt;
 
 &lt;p&gt;Let&amp;rsquo;s get right to it. Here&amp;rsquo;s our second function:&lt;/p&gt;
 
@@ -246,7 +246,7 @@ module.exports.handleSqsMessages = async (event) =&amp;gt; {
 
 &lt;p&gt;If any errors were hit on our way to this point, we&amp;rsquo;ve logged them to AWS CloudWatch and returned a non-zero value, ending the function.  But, if we made it this far without errors, we delete the message from our SQS queue and then we&amp;rsquo;re done!&lt;/p&gt;
 
-&lt;h2 id=&#34;the-updated-yaml-file&#34;&gt;The updated yaml file&lt;/h2&gt;
+&lt;h4 id=&#34;the-updated-yaml-file&#34;&gt;The updated yaml file&lt;/h4&gt;
 
 &lt;p&gt;So, now comes the second major part of this segment of our pipeline: the &lt;code&gt;serverless.yml&lt;/code&gt; file. Here&amp;rsquo;s the updated version. Take a quick read.&lt;/p&gt;
 
@@ -339,7 +339,7 @@ resources:
 
 &lt;p&gt;Now, you can run &lt;code&gt;serverless deploy&lt;/code&gt; in this directory to create this DynamoDB table!&lt;/p&gt;
 
-&lt;h2 id=&#34;other-thoughts&#34;&gt;Other thoughts&lt;/h2&gt;
+&lt;h4 id=&#34;other-thoughts&#34;&gt;Other thoughts&lt;/h4&gt;
 
 &lt;p&gt;One thought you may have had while reading this is:&lt;/p&gt;
 
@@ -349,7 +349,7 @@ resources:
 
 &lt;p&gt;No. The &lt;code&gt;MessageId&lt;/code&gt; value provided by each message from our SQS queue will remain the same if we fail to delete that item. We will, indeed, end up collecting this message again later on, but since we&amp;rsquo;re using this value as our primary key in the DynamoDB table we&amp;rsquo;d avoid duplicating it.  When you try to put a record in a DynamoDB table and the record&amp;rsquo;s primary key already exists, DyanmoDB will wimply simply &lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutItem.html&#34;&gt;overwrite the old item with the new&lt;/a&gt; one. Since the data from our SQS message will not have changed, this would be alright with us!&lt;/p&gt;
 
-&lt;h2 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h2&gt;
+&lt;h4 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h4&gt;
 
 &lt;p&gt;We have now successfully built our pipeline!  To sum it all up, we now have:
 * An API endpoint where a client can submit voting data.
@@ -383,11 +383,11 @@ resources:
 
 &lt;hr /&gt;
 
-&lt;h2 id=&#34;objective&#34;&gt;Objective&lt;/h2&gt;
+&lt;h4 id=&#34;objective&#34;&gt;Objective&lt;/h4&gt;
 
 &lt;p&gt;Our objective in this segment is to create an API endpoint attached to a Lambda function which will handle vote submissions, adding each vote to an SQS Message Queue to be processed at a later time.  This is the first part of our voting pipeline, an application that we&amp;rsquo;re designing as part of a fictitious case study.  See [part 1]() of this series for more info on that.&lt;/p&gt;
 
-&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;h4 id=&#34;intro&#34;&gt;Intro&lt;/h4&gt;
 
 &lt;p&gt;We&amp;rsquo;ll be using the &lt;a href=&#34;https://serverless.com/framework/&#34;&gt;Serverless Framework&lt;/a&gt; to build our &amp;ldquo;back-end&amp;rdquo; functions and API endpoints.  This framework is platform-agnostic, meaning we don&amp;rsquo;t &lt;em&gt;have&lt;/em&gt; to use AWS as our cloud platform.  We could use other providers as well!  The serverless functions are also a great choice here because they are efficient, cost-effective, and extremely scalable.&lt;/p&gt;
 
@@ -401,7 +401,7 @@ resources:
 &lt;li&gt;&lt;a href=&#34;https://serverless.com/framework/docs/&#34;&gt;The Serverless Framework (Docs)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;serverless-framework-getting-started&#34;&gt;Serverless Framework - Getting Started&lt;/h2&gt;
+&lt;h4 id=&#34;serverless-framework-getting-started&#34;&gt;Serverless Framework - Getting Started&lt;/h4&gt;
 
 &lt;p&gt;First, we&amp;rsquo;ll install the Serverless Framework.  There&amp;rsquo;s some great directions on how you can do that &lt;a href=&#34;https://serverless.com/framework/docs/getting-started/&#34;&gt;here&lt;/a&gt;, but essentially all you&amp;rsquo;ll be doing is running &lt;code&gt;npm install -g serverless&lt;/code&gt;.  This will install the cli tools for the framework, accessible through the &lt;code&gt;sls&lt;/code&gt; or &lt;code&gt;serverless&lt;/code&gt; commands.&lt;/p&gt;
 
@@ -432,7 +432,7 @@ module.exports.hello = async (event) =&amp;gt; {
 
 &lt;p&gt;This intro template from &lt;code&gt;serverless&lt;/code&gt; would only be this single Lambda function and nothing else.  What we need is a function that handles data and adds it to a SQS queue and an API endpoint to send our voting data to.  Let&amp;rsquo;s add those things now.&lt;/p&gt;
 
-&lt;h2 id=&#34;add-an-api-endpoint&#34;&gt;Add an API Endpoint&lt;/h2&gt;
+&lt;h4 id=&#34;add-an-api-endpoint&#34;&gt;Add an API Endpoint&lt;/h4&gt;
 
 &lt;p&gt;The main benefit of using the Serverless Framework comes from the &lt;code&gt;serverless.yml&lt;/code&gt; file.  This file defines not only your serverless functions, but any other services and rules related to these functions.  There is quite a bit of documentation on this file (and other parts of the framework), which you can find &lt;a href=&#34;https://serverless.com/framework/docs/&#34;&gt;here&lt;/a&gt;. To add an API endpoint, all it takes is to update our &lt;code&gt;serverless.yml&lt;/code&gt; file to contain the right bits of information.  Here&amp;rsquo;s the final result:&lt;/p&gt;
 
@@ -470,7 +470,7 @@ functions:
 
 &lt;p&gt;You&amp;rsquo;ll notice that the names of the file and function in our &lt;code&gt;.yml&lt;/code&gt; file don&amp;rsquo;t match up at the moment.  The &lt;code&gt;postVote&lt;/code&gt; function does not currently exist, and neither does the &lt;code&gt;post-vote&lt;/code&gt; file.  Currently, the &lt;code&gt;serverless.yml&lt;/code&gt; file would have to show &lt;code&gt;handler.hello&lt;/code&gt; for our function to work properly.  Let&amp;rsquo;s update that &lt;code&gt;.js&lt;/code&gt; file now before we test and deploy this API endpoint.  We&amp;rsquo;ll change the names of the file and function and update the code within.&lt;/p&gt;
 
-&lt;h2 id=&#34;building-our-serverless-function&#34;&gt;Building our Serverless Function&lt;/h2&gt;
+&lt;h4 id=&#34;building-our-serverless-function&#34;&gt;Building our Serverless Function&lt;/h4&gt;
 
 &lt;p&gt;First, a quick update of the file name.  We&amp;rsquo;ll name the file &lt;code&gt;post-vote.js&lt;/code&gt; and update the function name to &lt;code&gt;postVote&lt;/code&gt;.&lt;/p&gt;
 
@@ -579,7 +579,7 @@ module.exports.postVote = async (event, context) =&amp;gt; {
 
 &lt;hr /&gt;
 
-&lt;h2 id=&#34;permissions&#34;&gt;Permissions&lt;/h2&gt;
+&lt;h4 id=&#34;permissions&#34;&gt;Permissions&lt;/h4&gt;
 
 &lt;p&gt;If you&amp;rsquo;ve worked in AWS before, you&amp;rsquo;ll know that we need to set up some permissions here in order for these functions to run properly. Our Lambda function will have a couple of permissions by default - logging to CloudWatch, for example, which is done with the &lt;code&gt;console.log&lt;/code&gt; statements - but it won&amp;rsquo;t have the ability to do things in SQS or SNS unless we explicitly give those permissions to it.  This is done through IAM Roles.&lt;/p&gt;
 
@@ -631,7 +631,7 @@ resources:
 
 &lt;p&gt;The last important bit in this file is the &lt;code&gt;resources&lt;/code&gt; section.  This section will create actual AWS resources for us when we run our serverless service!   Here we create a SQS Queue, collecting the Queue Name from our environment variable at the top of the file.&lt;/p&gt;
 
-&lt;h2 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h2&gt;
+&lt;h4 id=&#34;finishing-up&#34;&gt;Finishing Up&lt;/h4&gt;
 
 &lt;p&gt;That pretty much does it for this bit of our pipeline.  We can test our function locally by installing the AWS SDK into our local project with &lt;code&gt;npm i aws-sdk&lt;/code&gt; and then running &lt;code&gt;sls invoke local —function post-vote —data &amp;lt;insert data string&amp;gt;&lt;/code&gt;.  Here&amp;rsquo;s an example that I ran locally:&lt;/p&gt;
 
@@ -663,11 +663,11 @@ resources:
 
 &lt;hr /&gt;
 
-&lt;h2 id=&#34;case-study&#34;&gt;Case Study&lt;/h2&gt;
+&lt;h4 id=&#34;case-study&#34;&gt;Case Study&lt;/h4&gt;
 
 &lt;p&gt;We are working at Netflix.  Yep, you and me both.  Our company, Netflix, has recently implemented their voting functionality where users can vote on different aspects of the show or movie they just watched.  We have been tasked with creating a pipeline which can receive and process an extremely large number of these votes in the most efficient, scalable, and cost effective way possible.&lt;/p&gt;
 
-&lt;h2 id=&#34;grooming&#34;&gt;Grooming&lt;/h2&gt;
+&lt;h4 id=&#34;grooming&#34;&gt;Grooming&lt;/h4&gt;
 
 &lt;p&gt;In this scenario, we can assume that the data will be passed from the front end as JSON.  The JSON will have a particular structure and we will have to provide a URL endpoint where the JSON can be sent.  Since the quantity of votes received per second or minute may change dramatically based on time of day or any number of other factors, we likely do not want to have a powerful server running all the time waiting to collect these votes.  This seems like an ideal situation for an &lt;a href=&#34;https://aws.amazon.com/api-gateway/&#34;&gt;AWS API Gateway&lt;/a&gt; connected to 1 or more serverless &lt;a href=&#34;https://aws.amazon.com/lambda/&#34;&gt;Lambda&lt;/a&gt; functions.&lt;/p&gt;
 
@@ -688,18 +688,6 @@ resources:
 &lt;/ul&gt;
 
 &lt;p&gt;Let&amp;rsquo;s get started!  The &lt;a href=&#34;https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/&#34;&gt;next post&lt;/a&gt; in this series will go over the first segment of our pipeline: the API gateway and the initial Lambda function.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://mct-dev.github.io/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://mct-dev.github.io/about/</guid>
-      <description>
-
-&lt;h1 id=&#34;mike&#34;&gt;Mike&lt;/h1&gt;
 </description>
     </item>
     

@@ -172,11 +172,11 @@
 
 <hr />
 
-<h2 id="objective">Objective</h2>
+<h4 id="objective">Objective</h4>
 
 <p>Our objective in this segment is to create an API endpoint attached to a Lambda function which will handle vote submissions, adding each vote to an SQS Message Queue to be processed at a later time.  This is the first part of our voting pipeline, an application that we&rsquo;re designing as part of a fictitious case study.  See [part 1]() of this series for more info on that.</p>
 
-<h2 id="intro">Intro</h2>
+<h4 id="intro">Intro</h4>
 
 <p>We&rsquo;ll be using the <a href="https://serverless.com/framework/">Serverless Framework</a> to build our &ldquo;back-end&rdquo; functions and API endpoints.  This framework is platform-agnostic, meaning we don&rsquo;t <em>have</em> to use AWS as our cloud platform.  We could use other providers as well!  The serverless functions are also a great choice here because they are efficient, cost-effective, and extremely scalable.</p>
 
@@ -190,7 +190,7 @@
 <li><a href="https://serverless.com/framework/docs/">The Serverless Framework (Docs)</a></li>
 </ul>
 
-<h2 id="serverless-framework-getting-started">Serverless Framework - Getting Started</h2>
+<h4 id="serverless-framework-getting-started">Serverless Framework - Getting Started</h4>
 
 <p>First, we&rsquo;ll install the Serverless Framework.  There&rsquo;s some great directions on how you can do that <a href="https://serverless.com/framework/docs/getting-started/">here</a>, but essentially all you&rsquo;ll be doing is running <code>npm install -g serverless</code>.  This will install the cli tools for the framework, accessible through the <code>sls</code> or <code>serverless</code> commands.</p>
 
@@ -221,7 +221,7 @@ module.exports.hello = async (event) =&gt; {
 
 <p>This intro template from <code>serverless</code> would only be this single Lambda function and nothing else.  What we need is a function that handles data and adds it to a SQS queue and an API endpoint to send our voting data to.  Let&rsquo;s add those things now.</p>
 
-<h2 id="add-an-api-endpoint">Add an API Endpoint</h2>
+<h4 id="add-an-api-endpoint">Add an API Endpoint</h4>
 
 <p>The main benefit of using the Serverless Framework comes from the <code>serverless.yml</code> file.  This file defines not only your serverless functions, but any other services and rules related to these functions.  There is quite a bit of documentation on this file (and other parts of the framework), which you can find <a href="https://serverless.com/framework/docs/">here</a>. To add an API endpoint, all it takes is to update our <code>serverless.yml</code> file to contain the right bits of information.  Here&rsquo;s the final result:</p>
 
@@ -259,7 +259,7 @@ functions:
 
 <p>You&rsquo;ll notice that the names of the file and function in our <code>.yml</code> file don&rsquo;t match up at the moment.  The <code>postVote</code> function does not currently exist, and neither does the <code>post-vote</code> file.  Currently, the <code>serverless.yml</code> file would have to show <code>handler.hello</code> for our function to work properly.  Let&rsquo;s update that <code>.js</code> file now before we test and deploy this API endpoint.  We&rsquo;ll change the names of the file and function and update the code within.</p>
 
-<h2 id="building-our-serverless-function">Building our Serverless Function</h2>
+<h4 id="building-our-serverless-function">Building our Serverless Function</h4>
 
 <p>First, a quick update of the file name.  We&rsquo;ll name the file <code>post-vote.js</code> and update the function name to <code>postVote</code>.</p>
 
@@ -368,7 +368,7 @@ module.exports.postVote = async (event, context) =&gt; {
 
 <hr />
 
-<h2 id="permissions">Permissions</h2>
+<h4 id="permissions">Permissions</h4>
 
 <p>If you&rsquo;ve worked in AWS before, you&rsquo;ll know that we need to set up some permissions here in order for these functions to run properly. Our Lambda function will have a couple of permissions by default - logging to CloudWatch, for example, which is done with the <code>console.log</code> statements - but it won&rsquo;t have the ability to do things in SQS or SNS unless we explicitly give those permissions to it.  This is done through IAM Roles.</p>
 
@@ -420,7 +420,7 @@ resources:
 
 <p>The last important bit in this file is the <code>resources</code> section.  This section will create actual AWS resources for us when we run our serverless service!   Here we create a SQS Queue, collecting the Queue Name from our environment variable at the top of the file.</p>
 
-<h2 id="finishing-up">Finishing Up</h2>
+<h4 id="finishing-up">Finishing Up</h4>
 
 <p>That pretty much does it for this bit of our pipeline.  We can test our function locally by installing the AWS SDK into our local project with <code>npm i aws-sdk</code> and then running <code>sls invoke local —function post-vote —data &lt;insert data string&gt;</code>.  Here&rsquo;s an example that I ran locally:</p>
 
