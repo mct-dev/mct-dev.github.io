@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noodp"/>
+  
+  
+  
+  
+  
+  <link rel="prev" href="https://mikectobias.com/posts/handling-sqs-messages-with-serverless/" />
+  
+  <link rel="canonical" href="https://mikectobias.com/posts/architecture-the-missing-piece-in-developer-education/" />
+  <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+  <title>
+       
+       
+           The Missing Piece for Self-Taught Developers | Mike Tobias
+       
+  </title>
+  <meta name="title" content="The Missing Piece for Self-Taught Developers | Mike Tobias">
+    
+  
+  <link rel="stylesheet" href="/font/iconfont.css">
+  <link rel="stylesheet" href="/css/main.min.css">
+
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="The Missing Piece for Self-Taught Developers"/>
+<meta name="twitter:description" content="Learning Choosing a path in software development can be difficult. There are a wide variety of paths available, depending on your preference and education. My own path seems to be more common, from what I&rsquo;ve seen scrolling through the internet lately. I was self-taught. No CS degree here. But what this meant was that I had to decided what subjects were important to focus on. I was interested in lots of different things, but I also needed to focus on things that would get me hired."/>
+
+  <script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "The Missing Piece for Self-Taught Developers",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:\/\/mikectobias.com\/posts\/architecture-the-missing-piece-in-developer-education\/"
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https:\/\/mikectobias.com\/cover.png",
+    "width":  800 ,
+    "height":  600 
+  },
+  "genre": "posts",
+  
+  "wordcount":  895 ,
+  "url": "https:\/\/mikectobias.com\/posts\/architecture-the-missing-piece-in-developer-education\/",
+  "datePublished": "2020-03-04T00:00:00\u002b00:00",
+  "dateModified": "2020-03-04T00:00:00\u002b00:00",
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Mike Tobias",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:\/\/mikectobias.com\/logo.png",
+      "width":  127 ,
+      "height":  40 
+    }
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Mike Tobias"
+  },
+  "description": ""
+}
+</script>
+</head>
+
+  
+
+
+  <body class="">
+    <div class="wrapper">
+        <nav class="navbar">
+    <div class="container">
+        <div class="navbar-header header-logo">
+        	<a href="https://mikectobias.com">Mike Tobias</a>
+        </div>
+        <div class="menu navbar-right">
+                
+                
+                <a class="menu-item" href="/" title="">Home</a>
+                
+                <a class="menu-item" href="/posts" title="">Blog</a>
+                
+                <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;
+        </div>
+    </div>
+</nav>
+<nav class="navbar-mobile" id="nav-mobile" style="display: none">
+     <div class="container">
+        <div class="navbar-header">
+            <div>  <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;<a href="https://mikectobias.com">Mike Tobias</a></div>
+            <div class="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+     
+          <div class="menu" id="mobile-menu">
+                
+                
+                <a class="menu-item" href="/" title="">Home</a>
+                
+                <a class="menu-item" href="/posts" title="">Blog</a>
+                
+        </div>
+    </div>
+</nav>
+    	 <main class="main">
+          <div class="container">
+      		
+<article class="post-warp">
+    <header class="post-header">
+        <h1 class="post-title">The Missing Piece for Self-Taught Developers</h1>
+        <div class="post-meta">
+            
+                <span class="post-time">
+                    
+                    <time datetime=2020-03-04 >4 March 2020</time>
+                </span>
+                <br />
+                
+                <i class="iconfont icon-folder"></i>
+                <span class="post-category">
+                        <a href="https://mikectobias.com/categories/software-architecture/"> Software Architecture </a>
+                        
+                </span>
+                <br />
+                <i class="iconfont icon-timer"></i>
+                5 min read
+        </div>
+    <style>
+      .post-content p {
+        margin: 2em 0;
+      }
+    </style>
+    </header>
+    <div class="post-content">
+        
+
+        
+
+        
+        
+     
+          
+          
+          
+
+          
+          
+          
+
+          <h2 id="learning">Learning</h2>
+<p>Choosing a path in software development can be difficult. There are a wide variety of paths available, depending on your preference and education. My own path seems to be more common, from what I&rsquo;ve seen scrolling through the internet lately. I was self-taught. No CS degree here. But what this meant was that I had to decided what subjects were important to focus on. I was interested in lots of different things, but I also needed to focus on things that would get me hired. This meant learning web development. These jobs were easier to come by and they were easier to get into.</p>
+<p>What I was <em>really</em> interested in was what the big boys had going on. When I started learning, there were people in the industry who were pushing the envelope.  These were the people I was interested in and the reason I wanted to get into technology. I liked building things, but I wanted to build <em>big</em> things. But you don&rsquo;t build big things without a CS degree and at least <em>some</em> software experience. I was coming from the mortgage industry! I had serious Excel skills, sure, but that definitely wouldn&rsquo;t cut it.</p>
+<p>So, I learned web development. I worked with some Python and some Javascript.  I built plenty of &ldquo;todo&rdquo; apps, blogs, and simple CRUD projects. I showed them off to people and I got a job. It was a good job and I&rsquo;m forever grateful for the opportunity they gave me. It was a foot in the door and I started learning real-world software development <em>fast</em>. But, during my tenure at this position until just recently, something was missing. I was certainly doing enough to get by. I was getting praise at work and delivering results. I was writing code and learning how to write it better. I learned other languages and frameworks and started expanding my skill set. But still, something was missing.</p>
+<h2 id="growing">Growing</h2>
+<p>There were occasions - not very often, but important when they did arise - when we&rsquo;d be starting something new. Maybe we needed a new service or a new group of services. Maybe it was decided that we needed to rebuild something or start something new from scratch. When my team members or managers discussed these things, I would either be left out or have nothing to contribute. This makes sense. I didn&rsquo;t know the answers here! Learning web development the way I did doesn&rsquo;t teach you what the <em>right</em> way to structure a project is. It doesn&rsquo;t teach you how to <em>properly</em> organize services and architect a project.</p>
+<p>And so we&rsquo;ve reached the crux of the issue. It&rsquo;s not only that I didn&rsquo;t know the answers in these situations, it&rsquo;s also the <em>value</em> that may have been transferred from that knowledge into the rest of my work. I&rsquo;ve since learned more about software architecture and would be able to contribute in those sorts of discussions. I&rsquo;ve also realized that having a good understanding of software design and architecture is useful in many situations <em>outside</em> of these &ldquo;new project&rdquo; discussions!</p>
+<h2 id="the-missing-piece">The Missing Piece</h2>
+<p>Simple software architecture patterns such as service decomposition and encapsulation can promote good patterns in many areas of development, not just when designing complex systems. For example, a new front end developer is given a new feature to implement. It involves calling an api, creating some web components, and introducing some new logic. If I was put in this situation near the start of my career, I wouldn&rsquo;t have had any understanding of good design patterns. I would have very likely arranged this code either all in the same place or just wherever <em>seemed</em> right. Quite often, this will not result in code that&rsquo;s easy to maintain, easy to refactor, and easy to contribute to. If instead I had a basic understanding of software design patterns, I may have attempted to separate my code into clearly encapsulated areas. I might have thought it out ahead of time and considered what areas of this feature might be more volatile - more likely to be changed in the future. While good Test-Driven Development practices might help you encapsulate your code, choosing what code to encapsulate and how you should do so can contribute even more to the quality of your project.</p>
+<p>Service decomposition and encapsulation are only a small part of good software architecture. But I think they do the best job of pointing out the value that can be brought to a self-taught developer&rsquo;s education, especially near the beginning to middle stages of their career. Spending some time looking into software architecture while also learning how to build that software would create a more well-rounded developer who could bring more value to their work and their team.</p>
+<h2 id="looking-forward">Looking Forward</h2>
+<p>These days, I&rsquo;m spending quite a bit of time thinking about software architecture. I&rsquo;m analyzing different patterns and practices and deciding what seems to be good practice throughout the industry and I believe I&rsquo;ll be sharing some of these discoveries here.  I&rsquo;d like to put together a series of posts which dive into software architecture for self-taught developers and how to present some of the more complex ideas from this subject in a way that&rsquo;s easily digestible and related to the daily work of a software developer in the early stages of their career.</p>
+<p>If you&rsquo;re interested in this topic, please consider subscribing!</p>
+
+    </div>
+
+    <div class="post-copyright">
+            
+           
+            <p class="copyright-item">
+                    <span>Words:</span>
+                   <span>895</span>
+            </p>
+            
+            <p class="copyright-item">
+                
+                <span>Share:</span>
+                <span>
+
+      
+        <a href="//twitter.com/share?url=https%3a%2f%2fmikectobias.com%2fposts%2farchitecture-the-missing-piece-in-developer-education%2f&amp;text=The%20Missing%20Piece%20for%20Self-Taught%20Developers&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="iconfont icon-twitter"></i>
+        </a>
+        
+      
+      
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fmikectobias.com%2fposts%2farchitecture-the-missing-piece-in-developer-education%2f" target="_blank" title="Share on Facebook">
+          <i class="iconfont icon-facebook"></i>
+        </a>
+        
+      
+      
+        <a href="//reddit.com/submit?url=https%3a%2f%2fmikectobias.com%2fposts%2farchitecture-the-missing-piece-in-developer-education%2f&amp;title=The%20Missing%20Piece%20for%20Self-Taught%20Developers" target="_blank" title="Share on Reddit">
+          <i class="iconfont icon-reddit"></i>
+        </a>
+        
+      
+      
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fmikectobias.com%2fposts%2farchitecture-the-missing-piece-in-developer-education%2f&amp;title=The%20Missing%20Piece%20for%20Self-Taught%20Developers" target="_blank" title="Share on LinkedIn">
+          <i class="iconfont icon-linkedin"></i>
+        </a>
+        
+      
+      
+        
+      
+        <a href="//news.ycombinator.com/submitlink?u=https%3a%2f%2fmikectobias.com%2fposts%2farchitecture-the-missing-piece-in-developer-education%2f&amp;description=The%20Missing%20Piece%20for%20Self-Taught%20Developers" target="_blank" title="Share on Hacker News">
+          <i class="iconfont icon-ycombinator"></i>
+        </a>
+        
+        
+      
+
+          
+        <a href="//www.tumblr.com/widgets/share/tool?canonicalUrl=https%3a%2f%2fmikectobias.com%2fposts%2farchitecture-the-missing-piece-in-developer-education%2f&amp;title=The%20Missing%20Piece%20for%20Self-Taught%20Developers" target="_blank" title="Share on Tumblr">
+            <i class="iconfont icon-tumblr"></i>
+          </a>
+          
+
+          
+
+          
+
+          
+</span>
+            </p>
+                
+
+            
+    </div>
+
+  
+    <div class="post-tags">
+        
+        <section>
+                <a href="javascript:window.history.back();">Back</a></span> · 
+                <span><a href="https://mikectobias.com">Home</a></span>
+        </section>
+    </div>
+
+    
+
+    <div class="post-comment">
+          
+          
+          
+    </div>
+</article>
+          </div>
+		   </main>
+      <footer class="footer">
+    <div class="copyright">
+        &copy;
+        
+         
+            <span class="author" itemprop="copyrightHolder"><a href="https://mikectobias.com">Mike Tobias</a></span>
+         
+
+		  
+    </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    <script src="/js/vendor_no_gallery.min.js" async=""></script>
+    
+  
+
+
+
+
+
+
+
+     </div>
+  </body>
+</html>

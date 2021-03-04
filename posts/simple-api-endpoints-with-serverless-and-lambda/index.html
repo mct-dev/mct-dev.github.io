@@ -10,9 +10,9 @@
   
   
   
-  <link rel="prev" href="https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/" />
-  <link rel="next" href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/" />
-  <link rel="canonical" href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/" />
+  <link rel="prev" href="https://mikectobias.com/posts/aws-sqs-microservice-pipeline/" />
+  <link rel="next" href="https://mikectobias.com/posts/handling-sqs-messages-with-serverless/" />
+  <link rel="canonical" href="https://mikectobias.com/posts/simple-api-endpoints-with-serverless-and-lambda/" />
   <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -45,36 +45,36 @@
   "headline": "Simple API Endpoints with Serverless and Lambda",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/"
+    "@id": "https:\/\/mikectobias.com\/posts\/simple-api-endpoints-with-serverless-and-lambda\/"
   },
   "image": {
     "@type": "ImageObject",
-    "url": "https://mct-dev.github.io/cover.png",
-    "width": 800,
-    "height": 600
+    "url": "https:\/\/mikectobias.com\/cover.png",
+    "width":  800 ,
+    "height":  600 
   },
   "genre": "posts",
   
-  "wordcount": 2375,
-  "url": "https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/",
-  "datePublished": "2019-04-16T00:00:00+00:00",
-  "dateModified": "2019-04-16T00:00:00+00:00",
+  "wordcount":  2375 ,
+  "url": "https:\/\/mikectobias.com\/posts\/simple-api-endpoints-with-serverless-and-lambda\/",
+  "datePublished": "2019-04-16T00:00:00\u002b00:00",
+  "dateModified": "2019-04-16T00:00:00\u002b00:00",
   
   "publisher": {
     "@type": "Organization",
     "name": "Mike Tobias",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://mct-dev.github.io/logo.png",
-      "width": 127,
-      "height": 40
+      "url": "https:\/\/mikectobias.com\/logo.png",
+      "width":  127 ,
+      "height":  40 
     }
   },
   "author": {
     "@type": "Person",
     "name": "Mike Tobias"
   },
-  "description": "Using AWS Lambda and the Serverless Framework to build platform-agnostic API&#39;s and serverless functions."
+  "description": "Using AWS Lambda and the Serverless Framework to build platform-agnostic API\u0027s and serverless functions."
 }
 </script>
 </head>
@@ -87,14 +87,14 @@
         <nav class="navbar">
     <div class="container">
         <div class="navbar-header header-logo">
-        	<a href="https://mct-dev.github.io">Mike Tobias</a>
+        	<a href="https://mikectobias.com">Mike Tobias</a>
         </div>
         <div class="menu navbar-right">
                 
                 
                 <a class="menu-item" href="/" title="">Home</a>
                 
-                <a class="menu-item" href="/posts/" title="">Blog</a>
+                <a class="menu-item" href="/posts" title="">Blog</a>
                 
                 <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;
         </div>
@@ -103,7 +103,7 @@
 <nav class="navbar-mobile" id="nav-mobile" style="display: none">
      <div class="container">
         <div class="navbar-header">
-            <div>  <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;<a href="https://mct-dev.github.io">Mike Tobias</a></div>
+            <div>  <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;<a href="https://mikectobias.com">Mike Tobias</a></div>
             <div class="menu-toggle">
                 <span></span><span></span><span></span>
             </div>
@@ -114,7 +114,7 @@
                 
                 <a class="menu-item" href="/" title="">Home</a>
                 
-                <a class="menu-item" href="/posts/" title="">Blog</a>
+                <a class="menu-item" href="/posts" title="">Blog</a>
                 
         </div>
     </div>
@@ -126,21 +126,27 @@
     <header class="post-header">
         <h1 class="post-title">Simple API Endpoints with Serverless and Lambda</h1>
         <div class="post-meta">
-            Written by <a href="https://mct-dev.github.io" rel="author">Mike Tobias</a>
+            
                 <span class="post-time">
-                    on <time datetime=2019-04-16 >16 April 2019</time>
+                    
+                    <time datetime=2019-04-16 >16 April 2019</time>
                 </span>
                 <br />
                 
                 <i class="iconfont icon-folder"></i>
                 <span class="post-category">
-                        <a href="https://mct-dev.github.io/categories/aws/"> AWS </a>
+                        <a href="https://mikectobias.com/categories/aws/"> AWS </a>
                         
                 </span>
                 <br />
                 <i class="iconfont icon-timer"></i>
                 12 min read
         </div>
+    <style>
+      .post-content p {
+        margin: 2em 0;
+      }
+    </style>
     </header>
     <div class="post-content">
         
@@ -160,28 +166,18 @@
           
           
 
-          
-
-<p>This is part 2 of the series.  Feel free to skip around to other sections using the links below.</p>
-
+          <p>This is part 2 of the series.  Feel free to skip around to other sections using the links below.</p>
 <ol>
-<li><a href="https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/">Case Study and Grooming</a></li>
-<li><a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/">Simple API Endpoints with Serverless and Lambda</a></li>
-<li><a href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/">Handling SQS Messages with Serverless Functions</a></li>
+<li><a href="https://mikectobias.com/posts/aws-sqs-microservice-pipeline/">Case Study and Grooming</a></li>
+<li><a href="https://mikectobias.com/posts/simple-api-endpoints-with-serverless-and-lambda/">Simple API Endpoints with Serverless and Lambda</a></li>
+<li><a href="https://mikectobias.com/posts/handling-sqs-messages-with-serverless/">Handling SQS Messages with Serverless Functions</a></li>
 </ol>
-
-<hr />
-
+<hr>
 <h4 id="objective">Objective</h4>
-
-<p>Our objective in this segment is to create an API endpoint attached to a Lambda function which will handle vote submissions, adding each vote to an SQS Message Queue to be processed at a later time.  This is the first part of our voting pipeline, an application that we&rsquo;re designing as part of a fictitious case study.  See [part 1]() of this series for more info on that.</p>
-
+<p>Our objective in this segment is to create an API endpoint attached to a Lambda function which will handle vote submissions, adding each vote to an SQS Message Queue to be processed at a later time.  This is the first part of our voting pipeline, an application that we&rsquo;re designing as part of a fictitious case study.  See <a href="">part 1</a> of this series for more info on that.</p>
 <h4 id="intro">Intro</h4>
-
 <p>We&rsquo;ll be using the <a href="https://serverless.com/framework/">Serverless Framework</a> to build our &ldquo;back-end&rdquo; functions and API endpoints.  This framework is platform-agnostic, meaning we don&rsquo;t <em>have</em> to use AWS as our cloud platform.  We could use other providers as well!  The serverless functions are also a great choice here because they are efficient, cost-effective, and extremely scalable.</p>
-
 <p>Also, if you&rsquo;re unfamiliar with any of the subjects discussed in this post, I&rsquo;d very much encourage you to read through some of the online documentation available for them.  Maybe do some googling or run through some of the &ldquo;Getting Started&rdquo; sections.  There&rsquo;s quite a bit of information out there, but here&rsquo;s some links that might be helpful:</p>
-
 <ul>
 <li><a href="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html">Lambda Developer Docs</a></li>
 <li><a href="https://docs.aws.amazon.com/lambda/latest/dg/programming-model.html">Building Lambda functions with Nodejs</a></li>
@@ -189,270 +185,281 @@
 <li><a href="https://aws.amazon.com/sqs/">Amazon Simple Queue Service (SQS)</a></li>
 <li><a href="https://serverless.com/framework/docs/">The Serverless Framework (Docs)</a></li>
 </ul>
-
-<h4 id="serverless-framework-getting-started">Serverless Framework - Getting Started</h4>
-
+<h4 id="serverless-framework---getting-started">Serverless Framework - Getting Started</h4>
 <p>First, we&rsquo;ll install the Serverless Framework.  There&rsquo;s some great directions on how you can do that <a href="https://serverless.com/framework/docs/getting-started/">here</a>, but essentially all you&rsquo;ll be doing is running <code>npm install -g serverless</code>.  This will install the cli tools for the framework, accessible through the <code>sls</code> or <code>serverless</code> commands.</p>
-
 <p>Now we can initialize a new project directory and create our serverless functions.  First, create a root project directory for yourself.  Mine will be <code>~/projects/voting-project/</code>. I also chose to add a subdirectory in this root folder called <code>serverless-functions</code>, just to keep the serverless portion of this service separated.  I&rsquo;ll use this location to store all of my Lambda functions for the project.  So, let&rsquo;s <code>cd</code> into this directory and run the below command.</p>
-
 <p><code>sls create —template aws-nodejs —path voting-service</code></p>
-
 <p>This command will create all of the necessary files for your serverless function, using a Node.js template.  Let&rsquo;s open the <code>handler.js</code> file (full path: <code>~/projects/voting-project/serverless-functions/voting-service/handler.js</code>). This file contains some boilerplate code for a Node.js lambda function:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">// handler.js
+</span><span style="color:#75715e"></span><span style="color:#e6db74">&#39;use strict&#39;</span>;
 
-<pre><code class="language-javascript">// handler.js
-'use strict';
-
-module.exports.hello = async (event) =&gt; {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Go Serverless v1.0! Your function executed successfully!',
-      input: event,
+<span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">hello</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">event</span>) =&gt; {
+  <span style="color:#66d9ef">return</span> {
+    <span style="color:#a6e22e">statusCode</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">200</span>,
+    <span style="color:#a6e22e">body</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>({
+      <span style="color:#a6e22e">message</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Go Serverless v1.0! Your function executed successfully!&#39;</span>,
+      <span style="color:#a6e22e">input</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">event</span>,
     }),
   };
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
-};
-</code></pre>
-
-<p>We can deploy this function immediately, if we wanted to!  Just <code>cd</code> into this directory - the <code>…/voting-service/</code> directory - and run <code>sls deploy</code>.  This will create a CloudFormation template and run it in AWS, which you can see in the AWS Management Console.  Then, to get rid of <em>everything</em> that this deploy command did, you can either run <code>sls remove</code> or you can open the CloudFormation stack in AWS and delete the stack manually.</p>
-
+  <span style="color:#75715e">// Use this code if you don&#39;t use the http event with the LAMBDA-PROXY integration
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// return { message: &#39;Go Serverless v1.0! Your function executed successfully!&#39;, event };
+</span><span style="color:#75715e"></span>};
+</code></pre></div><p>We can deploy this function immediately, if we wanted to!  Just <code>cd</code> into this directory - the <code>…/voting-service/</code> directory - and run <code>sls deploy</code>.  This will create a CloudFormation template and run it in AWS, which you can see in the AWS Management Console.  Then, to get rid of <em>everything</em> that this deploy command did, you can either run <code>sls remove</code> or you can open the CloudFormation stack in AWS and delete the stack manually.</p>
 <p>This intro template from <code>serverless</code> would only be this single Lambda function and nothing else.  What we need is a function that handles data and adds it to a SQS queue and an API endpoint to send our voting data to.  Let&rsquo;s add those things now.</p>
-
 <h4 id="add-an-api-endpoint">Add an API Endpoint</h4>
-
 <p>The main benefit of using the Serverless Framework comes from the <code>serverless.yml</code> file.  This file defines not only your serverless functions, but any other services and rules related to these functions.  There is quite a bit of documentation on this file (and other parts of the framework), which you can find <a href="https://serverless.com/framework/docs/">here</a>. To add an API endpoint, all it takes is to update our <code>serverless.yml</code> file to contain the right bits of information.  Here&rsquo;s the final result:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># serverless.yml</span>
+<span style="color:#f92672">service</span>: <span style="color:#ae81ff">voting-service</span>
 
-<pre><code class="language-yaml"># serverless.yml
-service: voting-service
-
-provider:
-  name: aws
-  region: us-east-1
-  runtime: nodejs8.10
-  stage: dev
+<span style="color:#f92672">provider</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws</span>
+  <span style="color:#f92672">region</span>: <span style="color:#ae81ff">us-east-1</span>
+  <span style="color:#f92672">runtime</span>: <span style="color:#ae81ff">nodejs8.10</span>
+  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">dev</span>
 
 
-functions:
-  post-vote:
-    handler: post-vote.postVote
-    events:
-      - http:
-          path: vote
-          method: post
-</code></pre>
-
-<p>In short, what we do here is:</p>
-
+<span style="color:#f92672">functions</span>:
+  <span style="color:#f92672">post-vote</span>:
+    <span style="color:#f92672">handler</span>: <span style="color:#ae81ff">post-vote.postVote</span>
+    <span style="color:#f92672">events</span>:
+      - <span style="color:#f92672">http</span>:
+          <span style="color:#f92672">path</span>: <span style="color:#ae81ff">vote</span>
+          <span style="color:#f92672">method</span>: <span style="color:#ae81ff">post</span>
+</code></pre></div><p>In short, what we do here is:</p>
 <ul>
 <li>Define our service name (at the top)</li>
 <li>Define the provider information we&rsquo;d like to use.  In our case, we&rsquo;re using AWS in the us-east-1 region, the runtime for our function will be nodejs, and we&rsquo;d like to set our deployment stage as <code>dev</code> for the moment.</li>
 <li>Define our functions.  We set the first function name to <code>post-vote</code> and point out that the handler (the actual function) can be found in the <code>post-vote</code> file at the <code>postVote</code> function (<code>&lt;file&gt;.&lt;function name&gt;</code>). Yes, these names are currently wrong.  We&rsquo;ll update them.</li>
 <li><strong>Define the Events associated with this function</strong>.  This is where we set up our API endpoint.  You can also set up many other types of events here which will trigger your Lambda function.  Check out all the event options <a href="https://serverless.com/framework/docs/providers/aws/events/">here</a>.
-
 <ul>
 <li>We define the endpoint as HTTP POST, with a url path of <code>/vote/</code></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>You&rsquo;ll notice that the names of the file and function in our <code>.yml</code> file don&rsquo;t match up at the moment.  The <code>postVote</code> function does not currently exist, and neither does the <code>post-vote</code> file.  Currently, the <code>serverless.yml</code> file would have to show <code>handler.hello</code> for our function to work properly.  Let&rsquo;s update that <code>.js</code> file now before we test and deploy this API endpoint.  We&rsquo;ll change the names of the file and function and update the code within.</p>
-
 <h4 id="building-our-serverless-function">Building our Serverless Function</h4>
-
 <p>First, a quick update of the file name.  We&rsquo;ll name the file <code>post-vote.js</code> and update the function name to <code>postVote</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">// hanlder.js --&gt; post-vote.js
+</span><span style="color:#75715e"></span><span style="color:#e6db74">&#39;use strict&#39;</span>;
 
-<pre><code class="language-javascript">// hanlder.js --&gt; post-vote.js
-'use strict';
-
-module.exports.postVote = async (event) =&gt; {
+<span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">postVote</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">event</span>) =&gt; {
 ...
-</code></pre>
+</code></pre></div><p>Ok, now let&rsquo;s throw some useful code in this file.  Currently, our function simply accepts the <code>event</code> object provided by the API endpoint and returns an object with a <code>200</code> status code and a <code>body</code> property containing a simple message and the <code>event</code> object.  Let&rsquo;s update this so that, instead, we collect our voting data from the <code>event</code> parameter and add this voting data to a specific SQS queue.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#e6db74">&#34;use strict&#34;</span>;
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AWS</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;aws-sdk&#34;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">parseEventData</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">apiEventData</span>) =&gt; {
 
-<p>Ok, now let&rsquo;s throw some useful code in this file.  Currently, our function simply accepts the <code>event</code> object provided by the API endpoint and returns an object with a <code>200</code> status code and a <code>body</code> property containing a simple message and the <code>event</code> object.  Let&rsquo;s update this so that, instead, we collect our voting data from the <code>event</code> parameter and add this voting data to a specific SQS queue.</p>
-
-<pre><code class="language-javascript">&quot;use strict&quot;;
-const AWS = require(&quot;aws-sdk&quot;);
-const parseEventData = (apiEventData) =&gt; {
-
-  // data should be passed in through query string params
-  if (apiEventData.queryStringParameters) {
-    return apiEventData.queryStringParameters;
+  <span style="color:#75715e">// data should be passed in through query string params
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">apiEventData</span>.<span style="color:#a6e22e">queryStringParameters</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">apiEventData</span>.<span style="color:#a6e22e">queryStringParameters</span>;
   }
 
-  return null;
+  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
 };
 
-AWS.config.update({region: &quot;us-east-1&quot;});
+<span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">update</span>({<span style="color:#a6e22e">region</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;us-east-1&#34;</span>});
 
-module.exports.postVote = async (event, context) =&gt; {
-  const sqs = new AWS.SQS({apiVersion: &quot;2012-11-05&quot;});
-  const sns = new AWS.SNS({apiVersion: &quot;2010-03-31&quot;});
-  let voteQueueUrl;
-  let voteData;
+<span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">postVote</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">event</span>, <span style="color:#a6e22e">context</span>) =&gt; {
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sqs</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">SQS</span>({<span style="color:#a6e22e">apiVersion</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2012-11-05&#34;</span>});
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sns</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">SNS</span>({<span style="color:#a6e22e">apiVersion</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2010-03-31&#34;</span>});
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">voteQueueUrl</span>;
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">voteData</span>;
 
-  voteData = parseEventData(event);
+  <span style="color:#a6e22e">voteData</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">parseEventData</span>(<span style="color:#a6e22e">event</span>);
 
-  if (!voteData) {
-    return {
-      statusCode: 500,
-      isBase64Encoded: false,
-      headers: {
-        &quot;Content-Type&quot;: &quot;text/plain&quot;
+  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">voteData</span>) {
+    <span style="color:#66d9ef">return</span> {
+      <span style="color:#a6e22e">statusCode</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">500</span>,
+      <span style="color:#a6e22e">isBase64Encoded</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>,
+      <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> {
+        <span style="color:#e6db74">&#34;Content-Type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;text/plain&#34;</span>
       },
-      body: JSON.stringify({
-        awsRequestId: context.awsRequestId,
-        error: {
-          message: &quot;No query string parameters were found!&quot;
+      <span style="color:#a6e22e">body</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>({
+        <span style="color:#a6e22e">awsRequestId</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">awsRequestId</span>,
+        <span style="color:#a6e22e">error</span><span style="color:#f92672">:</span> {
+          <span style="color:#a6e22e">message</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;No query string parameters were found!&#34;</span>
         },
-        input: event
+        <span style="color:#a6e22e">input</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">event</span>
       })
     };
 
   }
   
-  try {
-    voteQueueUrl = await sqs.getQueueUrl({
-      QueueName: process.env.SQS_QUEUE_NAME,
-    }).promise();
+  <span style="color:#66d9ef">try</span> {
+    <span style="color:#a6e22e">voteQueueUrl</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sqs</span>.<span style="color:#a6e22e">getQueueUrl</span>({
+      <span style="color:#a6e22e">QueueName</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">SQS_QUEUE_NAME</span>,
+    }).<span style="color:#a6e22e">promise</span>();
   
-    await sqs.sendMessage({
-      MessageBody: JSON.stringify(voteData),
-      QueueUrl: voteQueueUrl.QueueUrl
-    }).promise();
-    console.log(&quot;SQS message sent successfully!&quot;);
-  } catch (err) {
-    console.error(`SQS message send FAILED. Error: ${err}`);
+    <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sqs</span>.<span style="color:#a6e22e">sendMessage</span>({
+      <span style="color:#a6e22e">MessageBody</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">voteData</span>),
+      <span style="color:#a6e22e">QueueUrl</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">voteQueueUrl</span>.<span style="color:#a6e22e">QueueUrl</span>
+    }).<span style="color:#a6e22e">promise</span>();
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;SQS message sent successfully!&#34;</span>);
+  } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`SQS message send FAILED. Error: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">err</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
   }
 
-  // notify our second function that there's a new vote to handle
-  try {
-    await sns.publish({
-      Message: &quot;New Vote Posted!&quot;,
-      TopicArn: process.env.SNS_TOPIC_ARN
+  <span style="color:#75715e">// notify our second function that there&#39;s a new vote to handle
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">try</span> {
+    <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sns</span>.<span style="color:#a6e22e">publish</span>({
+      <span style="color:#a6e22e">Message</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;New Vote Posted!&#34;</span>,
+      <span style="color:#a6e22e">TopicArn</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">SNS_TOPIC_ARN</span>
     });
-    console.log(&quot;SNS published successfully!&quot;);
-  } catch (err) {
-    console.error(`SQS message send FAILED. Error: ${err}`);
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;SNS published successfully!&#34;</span>);
+  } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`SQS message send FAILED. Error: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">err</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
   }
 
 
-  return {
-    statusCode: 200,
-    headers: {
-      &quot;Content-Type&quot;: &quot;text/plain&quot;
+  <span style="color:#66d9ef">return</span> {
+    <span style="color:#a6e22e">statusCode</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">200</span>,
+    <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> {
+      <span style="color:#e6db74">&#34;Content-Type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;text/plain&#34;</span>
     },
-    isBase64Encoded: false,
-    body: JSON.stringify({
-      awsRequestId: context.awsRequestId,
-      message: &quot;Vote successfully processed.&quot;,
-      input: event
+    <span style="color:#a6e22e">isBase64Encoded</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>,
+    <span style="color:#a6e22e">body</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>({
+      <span style="color:#a6e22e">awsRequestId</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">awsRequestId</span>,
+      <span style="color:#a6e22e">message</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Vote successfully processed.&#34;</span>,
+      <span style="color:#a6e22e">input</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">event</span>
     })
   };
 };
 
-</code></pre>
-
-<p>A couple of things to go over here.  First, the AWS SDK is made available in Lambda to all supported languages.  In Nodejs, this is the <code>aws-sdk</code> package.  This package allows us to access other AWS services, in this case the SQS service.  Also, when using the AWS SDK, we always want to specify the region we&rsquo;re working in as well as a specific API version for the service that we use.  We&rsquo;ve done that here near the top of the file.  Let&rsquo;s go over the code in a bit more detail.</p>
-
+</code></pre></div><p>A couple of things to go over here.  First, the AWS SDK is made available in Lambda to all supported languages.  In Nodejs, this is the <code>aws-sdk</code> package.  This package allows us to access other AWS services, in this case the SQS service.  Also, when using the AWS SDK, we always want to specify the region we&rsquo;re working in as well as a specific API version for the service that we use.  We&rsquo;ve done that here near the top of the file.  Let&rsquo;s go over the code in a bit more detail.</p>
 <p>First, we require the <code>aws-sdk</code> and establish a function for parsing the event data (provided by the API endpoint).  Our endpoint will be set up with &ldquo;Lambda Proxy&rdquo; enabled by default, which means the <code>event</code> object passed in to our function will have quite a bit of information in it.  This also means that our response from this function needs to have a <code>body</code> which is formatted properly.  We&rsquo;ll just use the <code>JSON.stringify()</code> method for this.</p>
-
 <p>We then set up a quick function for processing the data from our <code>event</code> object.  In our case, all we want to do is make sure that <code>event</code> <em>is</em> an object and that it contains the <code>queryStringParameters</code> property.  This is where our voting data should be found.  If these things aren&rsquo;t available, we&rsquo;ll just throw an error with a quick message explaining that the voting data was not passed in correctly to the API endpoint.  This error can be caught in our <code>async</code> function and returned to the client with an appropriate status code.  But if all goes well, we&rsquo;ll return the <code>queryStringParameters</code>.</p>
-
 <p>In our main function, <code>postVote</code>, we first initialize the SQS and <code>SNS</code> objects and initialize the variables we&rsquo;ll use in this function.  Then, we get our voting data from the <code>event</code> parameter, using the function we created.  If the no voting data was found, we&rsquo;ll return a <code>400</code> status code and the error as a property of <code>body</code>. If we do have data, we&rsquo;ll continue by collecting the URL of our SQS queue and then adding a new message to this queue.  This bit will be in a try / catch block so that, if we hit any problems here, we can log an error message with the details.  After this, we&rsquo;ll publish an SNS message.  This will serve as one of the triggers for our next lambda function.  This other function will be subscribed to this SNS topic and will be triggered whenever we publish to that topic.  Again, we surround the publishing of the SNS message in a try / catch so that we can log a specific error if something goes wrong with this part.  Finally, if we ran everything successfully in our main <code>postVote</code> function, we&rsquo;ll return a 200 status and a success message in the body.</p>
-
-<hr />
-
+<hr>
 <p>An important thing to note in our above code is that most functions in the AWS SDK will be asynchronous calls, and can be made into a Nodejs <code>Promise</code> by calling the <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html#promise-property"><code>.promise()</code></a> function on the <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Request.html"><code>AWS Request</code></a> object (returned by <code>getQueueUrl</code> and <code>sendMessage</code> in our case).  This returns a <code>Promise</code> instead of using the callback, which allows us to use <code>async</code> and <code>await</code> to write cleaner code!</p>
-
-<hr />
-
+<hr>
 <h4 id="permissions">Permissions</h4>
-
 <p>If you&rsquo;ve worked in AWS before, you&rsquo;ll know that we need to set up some permissions here in order for these functions to run properly. Our Lambda function will have a couple of permissions by default - logging to CloudWatch, for example, which is done with the <code>console.log</code> statements - but it won&rsquo;t have the ability to do things in SQS or SNS unless we explicitly give those permissions to it.  This is done through IAM Roles.</p>
-
 <p>With the Serverless framework, we can set up a role within our code.  This makes management of the service as a whole much easier.  To do this, we&rsquo;ll open up the <code>serverless.yml</code> file again and make some changes.  Here&rsquo;s the result:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">service</span>: <span style="color:#ae81ff">voting-app</span>
 
-<pre><code class="language-yaml">service: voting-app
+<span style="color:#f92672">provider</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws</span>
+  <span style="color:#f92672">runtime</span>: <span style="color:#ae81ff">nodejs8.10</span>
+  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">${opt:stage, &#39;dev&#39;}</span>
+  <span style="color:#f92672">region</span>: <span style="color:#ae81ff">${opt:region, &#39;us-east-1&#39;}</span>
+  <span style="color:#f92672">environment</span>:
+    <span style="color:#f92672">SQS_QUEUE_NAME</span>: <span style="color:#ae81ff">${self:service}-${self:provider.stage}-queue</span>
+    <span style="color:#f92672">SNS_TOPIC</span>: <span style="color:#ae81ff">${self:service}-${self:provider.stage}-topic</span>
+  <span style="color:#f92672">iamRoleStatements</span>:
+    - <span style="color:#f92672">Effect</span>: <span style="color:#ae81ff">Allow</span>
+      <span style="color:#f92672">Action</span>:
+        - <span style="color:#ae81ff">SQS:*</span>
+      <span style="color:#f92672">Resource</span>: {<span style="color:#e6db74">&#34;Fn::Join&#34;</span> : [<span style="color:#e6db74">&#34;&#34;</span>, [<span style="color:#e6db74">&#34;arn:aws:sqs:${self:provider.region}:&#34;</span>, {<span style="color:#e6db74">&#34;Ref&#34;</span>:<span style="color:#e6db74">&#34;AWS::AccountId&#34;</span>}, <span style="color:#e6db74">&#34;:${self:provider.environment.SQS_QUEUE_NAME}&#34;</span> ] ] }
+    - <span style="color:#f92672">Effect</span>: <span style="color:#ae81ff">Allow</span>
+      <span style="color:#f92672">Action</span>:
+        - <span style="color:#ae81ff">SNS:*</span>
+      <span style="color:#f92672">Resource</span>: {<span style="color:#e6db74">&#34;Fn::Join&#34;</span>:[<span style="color:#e6db74">&#34;&#34;</span>, [<span style="color:#e6db74">&#34;arn:aws:sns:${self:provider.region}:&#34;</span>, {<span style="color:#e6db74">&#34;Ref&#34;</span>:<span style="color:#e6db74">&#34;AWS::AccountId&#34;</span>}, <span style="color:#e6db74">&#34;:${self:provider.environment.SNS_TOPIC}&#34;</span>]]}
 
-provider:
-  name: aws
-  runtime: nodejs8.10
-  stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'us-east-1'}
-  environment:
-    SQS_QUEUE_NAME: ${self:service}-${self:provider.stage}-queue
-    SNS_TOPIC: ${self:service}-${self:provider.stage}-topic
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - SQS:*
-      Resource: {&quot;Fn::Join&quot; : [&quot;&quot;, [&quot;arn:aws:sqs:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SQS_QUEUE_NAME}&quot; ] ] }
-    - Effect: Allow
-      Action:
-        - SNS:*
-      Resource: {&quot;Fn::Join&quot;:[&quot;&quot;, [&quot;arn:aws:sns:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SNS_TOPIC}&quot;]]}
+<span style="color:#f92672">functions</span>:
+  <span style="color:#f92672">post-vote</span>:
+    <span style="color:#f92672">handler</span>: <span style="color:#ae81ff">post-vote.postVote</span>
+    <span style="color:#f92672">events</span>:
+      - <span style="color:#f92672">http</span>:
+          <span style="color:#f92672">path</span>: <span style="color:#ae81ff">vote</span>
+          <span style="color:#f92672">method</span>: <span style="color:#ae81ff">post</span>
+    <span style="color:#f92672">environment</span>:
+      <span style="color:#f92672">SNS_TOPIC_ARN</span>: {<span style="color:#e6db74">&#34;Fn::Join&#34;</span>:[<span style="color:#e6db74">&#34;&#34;</span>, [<span style="color:#e6db74">&#34;arn:aws:sns:${self:provider.region}:&#34;</span>, {<span style="color:#e6db74">&#34;Ref&#34;</span>:<span style="color:#e6db74">&#34;AWS::AccountId&#34;</span>}, <span style="color:#e6db74">&#34;:${self:provider.environment.SNS_TOPIC}&#34;</span>]]}
 
-functions:
-  post-vote:
-    handler: post-vote.postVote
-    events:
-      - http:
-          path: vote
-          method: post
-    environment:
-      SNS_TOPIC_ARN: {&quot;Fn::Join&quot;:[&quot;&quot;, [&quot;arn:aws:sns:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SNS_TOPIC}&quot;]]}
-
-resources:
-  Resources:
-    VotesQueue:
-      Type: 'AWS::SQS::Queue'
-      Properties:
-        QueueName: ${self:provider.environment.SQS_QUEUE_NAME}
-</code></pre>
-
-<p>The first thing you&rsquo;ve probably noticed is a lot of these: <code>{}</code>.  What&rsquo;s going on here? Well, in the serverless yaml files you can use variables and functions!  Take a quick look <a href="https://serverless.com/framework/docs/providers/aws/guide/variables/">here</a> to get a good idea on how variables work, and <a href="https://theserverlessway.com/aws/cloudformation/template-functions/">here</a> for a nice blog post on the functions.  Using variables and functions allows us to avoid repeating ourselves - see the <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY Policy</a> - and also helps keep our naming conventions all the same throughout our pipeline.</p>
-
+<span style="color:#f92672">resources</span>:
+  <span style="color:#f92672">Resources</span>:
+    <span style="color:#f92672">VotesQueue</span>:
+      <span style="color:#f92672">Type</span>: <span style="color:#e6db74">&#39;AWS::SQS::Queue&#39;</span>
+      <span style="color:#f92672">Properties</span>:
+        <span style="color:#f92672">QueueName</span>: <span style="color:#ae81ff">${self:provider.environment.SQS_QUEUE_NAME}</span>
+</code></pre></div><p>The first thing you&rsquo;ve probably noticed is a lot of these: <code>{}</code>.  What&rsquo;s going on here? Well, in the serverless yaml files you can use variables and functions!  Take a quick look <a href="https://serverless.com/framework/docs/providers/aws/guide/variables/">here</a> to get a good idea on how variables work, and <a href="https://theserverlessway.com/aws/cloudformation/template-functions/">here</a> for a nice blog post on the functions.  Using variables and functions allows us to avoid repeating ourselves - see the <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY Policy</a> - and also helps keep our naming conventions all the same throughout our pipeline.</p>
 <p>The <code>iamRoleStatements</code> section is where we establish our IAM Roles.  These roles allow our Lambda functions to interact with SQS and SNS.  Here we&rsquo;ve just said &ldquo;Let our service access this specific resource and take any action on it&rdquo; for both SQS and SNS. The resources in question are established at the <code>Resource</code> fields, where we build an AWS ARN which will specifically point to our SNS Topic and SQS Queue.</p>
-
 <p>We&rsquo;ve also added <em>environment variables</em> here for the SQS queue name and the SNS topic name.  These environment variables can be accessed at runtime by our functions!  You may have noticed in our function code above that we are collecting the SQS queue name and SNS topic name from <code>process.env</code>.  The variables we establish here in the <code>environment</code> section end up in that <code>process.env</code> object!</p>
-
 <p>The last important bit in this file is the <code>resources</code> section.  This section will create actual AWS resources for us when we run our serverless service!   Here we create a SQS Queue, collecting the Queue Name from our environment variable at the top of the file.</p>
-
 <h4 id="finishing-up">Finishing Up</h4>
-
 <p>That pretty much does it for this bit of our pipeline.  We can test our function locally by installing the AWS SDK into our local project with <code>npm i aws-sdk</code> and then running <code>sls invoke local —function post-vote —data &lt;insert data string&gt;</code>.  Here&rsquo;s an example that I ran locally:</p>
-
-<p><figure><img src="/images/ring.svg" data-sizes="auto" data-src="/images/blog/2019-04-17_sls-invoke-local.png" alt="" class="lazyload"><figcaption class="image-caption"></figcaption></figure></p>
-
+<p><img src="/images/blog/2019-04-17_sls-invoke-local.png" alt=""></p>
 <p>The returned string of JSON doesn&rsquo;t look pretty, but it does show that the function is working properly.  If you had trouble running this locally, you&rsquo;ll likely have to <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html">configure your aws cli</a> so that the AWS SDK we&rsquo;re using can access your AWS resources.</p>
-
 <p>To deploy this to AWS, we run <code>sls deploy</code> within our <code>/serverless-functions/voting-service/</code> directory.  This will deploy everything that we need into AWS, permissions and all!  Then, if we want to remove all of these resources in AWS we can simply run <code>sls remove</code> in the same directory.  Simple.</p>
-
-<p>The next step in our project will be another serverless function which checks our SQS queue for messages and handles these messages appropriately.  We&rsquo;ll build this bit in <a href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/">the next post of this series</a>.  See you there!</p>
+<p>The next step in our project will be another serverless function which checks our SQS queue for messages and handles these messages appropriately.  We&rsquo;ll build this bit in <a href="https://mikectobias.com/posts/handling-sqs-messages-with-serverless/">the next post of this series</a>.  See you there!</p>
 
     </div>
 
-    
+    <div class="post-copyright">
+            
+           
+            <p class="copyright-item">
+                    <span>Words:</span>
+                   <span>2375</span>
+            </p>
+            
+            <p class="copyright-item">
+                
+                <span>Share:</span>
+                <span>
+
+      
+        <a href="//twitter.com/share?url=https%3a%2f%2fmikectobias.com%2fposts%2fsimple-api-endpoints-with-serverless-and-lambda%2f&amp;text=Simple%20API%20Endpoints%20with%20Serverless%20and%20Lambda&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="iconfont icon-twitter"></i>
+        </a>
+        
+      
+      
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fmikectobias.com%2fposts%2fsimple-api-endpoints-with-serverless-and-lambda%2f" target="_blank" title="Share on Facebook">
+          <i class="iconfont icon-facebook"></i>
+        </a>
+        
+      
+      
+        <a href="//reddit.com/submit?url=https%3a%2f%2fmikectobias.com%2fposts%2fsimple-api-endpoints-with-serverless-and-lambda%2f&amp;title=Simple%20API%20Endpoints%20with%20Serverless%20and%20Lambda" target="_blank" title="Share on Reddit">
+          <i class="iconfont icon-reddit"></i>
+        </a>
+        
+      
+      
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fmikectobias.com%2fposts%2fsimple-api-endpoints-with-serverless-and-lambda%2f&amp;title=Simple%20API%20Endpoints%20with%20Serverless%20and%20Lambda" target="_blank" title="Share on LinkedIn">
+          <i class="iconfont icon-linkedin"></i>
+        </a>
+        
+      
+      
+        
+      
+        <a href="//news.ycombinator.com/submitlink?u=https%3a%2f%2fmikectobias.com%2fposts%2fsimple-api-endpoints-with-serverless-and-lambda%2f&amp;description=Simple%20API%20Endpoints%20with%20Serverless%20and%20Lambda" target="_blank" title="Share on Hacker News">
+          <i class="iconfont icon-ycombinator"></i>
+        </a>
+        
+        
+      
+
+          
+        <a href="//www.tumblr.com/widgets/share/tool?canonicalUrl=https%3a%2f%2fmikectobias.com%2fposts%2fsimple-api-endpoints-with-serverless-and-lambda%2f&amp;title=Simple%20API%20Endpoints%20with%20Serverless%20and%20Lambda" target="_blank" title="Share on Tumblr">
+            <i class="iconfont icon-tumblr"></i>
+          </a>
+          
+
+          
+
+          
+
+          
+</span>
+            </p>
+                
+
+            
+    </div>
 
   
     <div class="post-tags">
         
         <section>
                 <a href="javascript:window.history.back();">Back</a></span> · 
-                <span><a href="https://mct-dev.github.io">Home</a></span>
+                <span><a href="https://mikectobias.com">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav">
-        
-        <a href="https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/" class="prev" rel="prev" title="Netflix Voting Service - Case Study"><i class="iconfont icon-dajiantou"></i>&nbsp;Netflix Voting Service - Case Study</a>
-         
-        
-        <a href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/" class="next" rel="next" title="Handling SQS Messages with Serverless Functions">Handling SQS Messages with Serverless Functions&nbsp;<i class="iconfont icon-xiaojiantou"></i></a>
-        
-    </div>
+    
 
     <div class="post-comment">
           
@@ -467,7 +474,7 @@ resources:
         &copy;
         
          
-            <span class="author" itemprop="copyrightHolder"><a href="https://mct-dev.github.io">Mike Tobias</a></span>
+            <span class="author" itemprop="copyrightHolder"><a href="https://mikectobias.com">Mike Tobias</a></span>
          
 
 		  

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Software Architecture on Mike Tobias</title>
+    <link>https://mikectobias.com/categories/software-architecture/</link>
+    <description>Recent content in Software Architecture on Mike Tobias</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 04 Mar 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://mikectobias.com/categories/software-architecture/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Missing Piece for Self-Taught Developers</title>
+      <link>https://mikectobias.com/posts/architecture-the-missing-piece-in-developer-education/</link>
+      <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://mikectobias.com/posts/architecture-the-missing-piece-in-developer-education/</guid>
+      <description>Learning Choosing a path in software development can be difficult. There are a wide variety of paths available, depending on your preference and education. My own path seems to be more common, from what I&amp;rsquo;ve seen scrolling through the internet lately. I was self-taught. No CS degree here. But what this meant was that I had to decided what subjects were important to focus on. I was interested in lots of different things, but I also needed to focus on things that would get me hired.</description>
+    </item>
+    
+  </channel>
+</rss>

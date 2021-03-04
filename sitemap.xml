@@ -1,9 +1,58 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
     <url>
-      <loc>https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/</loc>
+      <loc>https://mikectobias.com/categories/</loc>
+      
+      <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+      
+      
+      
+      
+    </url>
+  
+    <url>
+      <loc>https://mikectobias.com/</loc>
+      
+      <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+      
+      
+      
+      
+    </url>
+  
+    <url>
+      <loc>https://mikectobias.com/posts/</loc>
+      
+      <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+      
+      
+      
+      
+    </url>
+  
+    <url>
+      <loc>https://mikectobias.com/categories/software-architecture/</loc>
+      
+      <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+      
+      
+      
+      
+    </url>
+  
+    <url>
+      <loc>https://mikectobias.com/posts/architecture-the-missing-piece-in-developer-education/</loc>
+      
+      <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+      
+      
+      
+      
+    </url>
+  
+    <url>
+      <loc>https://mikectobias.com/categories/aws/</loc>
       
       <lastmod>2019-04-18T00:00:00+00:00</lastmod>
       
@@ -13,7 +62,17 @@
     </url>
   
     <url>
-      <loc>https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/</loc>
+      <loc>https://mikectobias.com/posts/handling-sqs-messages-with-serverless/</loc>
+      
+      <lastmod>2019-04-18T00:00:00+00:00</lastmod>
+      
+      
+      
+      
+    </url>
+  
+    <url>
+      <loc>https://mikectobias.com/posts/simple-api-endpoints-with-serverless-and-lambda/</loc>
       
       <lastmod>2019-04-16T00:00:00+00:00</lastmod>
       
@@ -23,7 +82,7 @@
     </url>
   
     <url>
-      <loc>https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/</loc>
+      <loc>https://mikectobias.com/posts/aws-sqs-microservice-pipeline/</loc>
       
       <lastmod>2019-04-11T00:00:00+00:00</lastmod>
       
@@ -33,59 +92,9 @@
     </url>
   
     <url>
-      <loc>https://mct-dev.github.io/categories/aws/</loc>
-      
-      <lastmod>2019-04-18T00:00:00+00:00</lastmod>
+      <loc>https://mikectobias.com/tags/</loc>
       
       
-      
-      <priority>0</priority>
-      
-      
-    </url>
-  
-    <url>
-      <loc>https://mct-dev.github.io/categories/</loc>
-      
-      <lastmod>2019-04-18T00:00:00+00:00</lastmod>
-      
-      
-      
-      <priority>0</priority>
-      
-      
-    </url>
-  
-    <url>
-      <loc>https://mct-dev.github.io/</loc>
-      
-      <lastmod>2019-04-18T00:00:00+00:00</lastmod>
-      
-      
-      
-      <priority>0</priority>
-      
-      
-    </url>
-  
-    <url>
-      <loc>https://mct-dev.github.io/posts/</loc>
-      
-      <lastmod>2019-04-18T00:00:00+00:00</lastmod>
-      
-      
-      
-      <priority>0</priority>
-      
-      
-    </url>
-  
-    <url>
-      <loc>https://mct-dev.github.io/tags/</loc>
-      
-      
-      
-      <priority>0</priority>
       
       
     </url>

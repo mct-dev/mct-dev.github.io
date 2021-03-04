@@ -10,9 +10,9 @@
   
   
   
-  <link rel="prev" href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/" />
-  
-  <link rel="canonical" href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/" />
+  <link rel="prev" href="https://mikectobias.com/posts/simple-api-endpoints-with-serverless-and-lambda/" />
+  <link rel="next" href="https://mikectobias.com/posts/architecture-the-missing-piece-in-developer-education/" />
+  <link rel="canonical" href="https://mikectobias.com/posts/handling-sqs-messages-with-serverless/" />
   <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -45,29 +45,29 @@
   "headline": "Handling SQS Messages with Serverless Functions",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/"
+    "@id": "https:\/\/mikectobias.com\/posts\/handling-sqs-messages-with-serverless\/"
   },
   "image": {
     "@type": "ImageObject",
-    "url": "https://mct-dev.github.io/cover.png",
-    "width": 800,
-    "height": 600
+    "url": "https:\/\/mikectobias.com\/cover.png",
+    "width":  800 ,
+    "height":  600 
   },
   "genre": "posts",
   
-  "wordcount": 2078,
-  "url": "https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/",
-  "datePublished": "2019-04-18T00:00:00+00:00",
-  "dateModified": "2019-04-18T00:00:00+00:00",
+  "wordcount":  2072 ,
+  "url": "https:\/\/mikectobias.com\/posts\/handling-sqs-messages-with-serverless\/",
+  "datePublished": "2019-04-18T00:00:00\u002b00:00",
+  "dateModified": "2019-04-18T00:00:00\u002b00:00",
   
   "publisher": {
     "@type": "Organization",
     "name": "Mike Tobias",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://mct-dev.github.io/logo.png",
-      "width": 127,
-      "height": 40
+      "url": "https:\/\/mikectobias.com\/logo.png",
+      "width":  127 ,
+      "height":  40 
     }
   },
   "author": {
@@ -87,14 +87,14 @@
         <nav class="navbar">
     <div class="container">
         <div class="navbar-header header-logo">
-        	<a href="https://mct-dev.github.io">Mike Tobias</a>
+        	<a href="https://mikectobias.com">Mike Tobias</a>
         </div>
         <div class="menu navbar-right">
                 
                 
                 <a class="menu-item" href="/" title="">Home</a>
                 
-                <a class="menu-item" href="/posts/" title="">Blog</a>
+                <a class="menu-item" href="/posts" title="">Blog</a>
                 
                 <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;
         </div>
@@ -103,7 +103,7 @@
 <nav class="navbar-mobile" id="nav-mobile" style="display: none">
      <div class="container">
         <div class="navbar-header">
-            <div>  <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;<a href="https://mct-dev.github.io">Mike Tobias</a></div>
+            <div>  <a href="javascript:void(0);" class="theme-switch"><i class="iconfont icon-sun"></i></a>&nbsp;<a href="https://mikectobias.com">Mike Tobias</a></div>
             <div class="menu-toggle">
                 <span></span><span></span><span></span>
             </div>
@@ -114,7 +114,7 @@
                 
                 <a class="menu-item" href="/" title="">Home</a>
                 
-                <a class="menu-item" href="/posts/" title="">Blog</a>
+                <a class="menu-item" href="/posts" title="">Blog</a>
                 
         </div>
     </div>
@@ -126,21 +126,27 @@
     <header class="post-header">
         <h1 class="post-title">Handling SQS Messages with Serverless Functions</h1>
         <div class="post-meta">
-            Written by <a href="https://mct-dev.github.io" rel="author">Mike Tobias</a>
+            
                 <span class="post-time">
-                    on <time datetime=2019-04-18 >18 April 2019</time>
+                    
+                    <time datetime=2019-04-18 >18 April 2019</time>
                 </span>
                 <br />
                 
                 <i class="iconfont icon-folder"></i>
                 <span class="post-category">
-                        <a href="https://mct-dev.github.io/categories/aws/"> AWS </a>
+                        <a href="https://mikectobias.com/categories/aws/"> AWS </a>
                         
                 </span>
                 <br />
                 <i class="iconfont icon-timer"></i>
                 10 min read
         </div>
+    <style>
+      .post-content p {
+        margin: 2em 0;
+      }
+    </style>
     </header>
     <div class="post-content">
         
@@ -158,373 +164,397 @@
           
           
 
-          
-
-<p>This is part 3 of the series.  Feel free to skip around to other sections using the links below.</p>
-
+          <p>This is part 3 of the series.  Feel free to skip around to other sections using the links below.</p>
 <ol>
-<li><a href="https://mct-dev.github.io/posts/aws-sqs-microservice-pipeline/">Case Study and Grooming</a></li>
-<li><a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/">Simple API Endpoints with Serverless and Lambda</a></li>
-<li><a href="https://mct-dev.github.io/posts/handling-sqs-messages-with-serverless/">Handling SQS Messages with Serverless Functions</a></li>
+<li><a href="https://mikectobias.com/posts/aws-sqs-microservice-pipeline/">Case Study and Grooming</a></li>
+<li><a href="https://mikectobias.com/posts/simple-api-endpoints-with-serverless-and-lambda/">Simple API Endpoints with Serverless and Lambda</a></li>
+<li><a href="https://mikectobias.com/posts/handling-sqs-messages-with-serverless/">Handling SQS Messages with Serverless Functions</a></li>
 </ol>
-
-<hr />
-
+<hr>
 <h4 id="objective">Objective</h4>
-
-<p>In our <a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/">last post</a> we set up an API endpoint and a serverless function which will receive voting data, add it to our SQS Queue, then publish to an SNS topic. Now, we need to build a function which will consume messages from this SQS Queue and add them to a database. We&rsquo;ll use DynamoDB for our database because it&rsquo;s scalable, reliable, NoSQL, and integrates well with our pipeline.</p>
-
+<p>In our <a href="https://mikectobias.com/posts/simple-api-endpoints-with-serverless-and-lambda/">last post</a> we set up an API endpoint and a serverless function which will receive voting data, add it to our SQS Queue, then publish to an SNS topic. Now, we need to build a function which will consume messages from this SQS Queue and add them to a database. We&rsquo;ll use DynamoDB for our database because it&rsquo;s scalable, reliable, NoSQL, and integrates well with our pipeline.</p>
 <h4 id="the-new-function">The new function</h4>
-
 <p>Let&rsquo;s get right to it. Here&rsquo;s our second function:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#e6db74">&#34;use strict&#34;</span>;
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AWS</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;aws-sdk&#34;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sqs</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">SQS</span>({<span style="color:#a6e22e">apiVersion</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2012-11-05&#34;</span>});
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">DynamoDB</span>.<span style="color:#a6e22e">DocumentClient</span>({<span style="color:#a6e22e">apiVersion</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2012-08-10&#34;</span>});
 
-<pre><code class="language-javascript">&quot;use strict&quot;;
-const AWS = require(&quot;aws-sdk&quot;);
-const sqs = new AWS.SQS({apiVersion: &quot;2012-11-05&quot;});
-const db = new AWS.DynamoDB.DocumentClient({apiVersion: &quot;2012-08-10&quot;});
+<span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">update</span>({<span style="color:#a6e22e">region</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;us-east-1&#34;</span>});
 
-AWS.config.update({region: &quot;us-east-1&quot;});
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getQueueUrl</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () =&gt; {
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">queueUrlResponse</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sqs</span>.<span style="color:#a6e22e">getQueueUrl</span>({
+    <span style="color:#a6e22e">QueueName</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">SQS_QUEUE_NAME</span>
+  }).<span style="color:#a6e22e">promise</span>();
 
-const getQueueUrl = async () =&gt; {
-  let queueUrlResponse = await sqs.getQueueUrl({
-    QueueName: process.env.SQS_QUEUE_NAME
-  }).promise();
-
-  return queueUrlResponse.QueueUrl;
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">queueUrlResponse</span>.<span style="color:#a6e22e">QueueUrl</span>;
 };
 
-const getMessages = async (queueUrl) =&gt; {
-  let messagesResponse = await sqs.receiveMessage({
-    QueueUrl: queueUrl,
-    WaitTimeSeconds: 5,
-    MaxNumberOfMessages: 10
-  }).promise();
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">queueUrl</span>) =&gt; {
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">messagesResponse</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sqs</span>.<span style="color:#a6e22e">receiveMessage</span>({
+    <span style="color:#a6e22e">QueueUrl</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">queueUrl</span>,
+    <span style="color:#a6e22e">WaitTimeSeconds</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5</span>,
+    <span style="color:#a6e22e">MaxNumberOfMessages</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">10</span>
+  }).<span style="color:#a6e22e">promise</span>();
 
-  return messagesResponse &amp;&amp; messagesResponse.Messages
-    ? messagesResponse.Messages
-    : [];
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">messagesResponse</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">messagesResponse</span>.<span style="color:#a6e22e">Messages</span>
+    <span style="color:#f92672">?</span> <span style="color:#a6e22e">messagesResponse</span>.<span style="color:#a6e22e">Messages</span>
+    <span style="color:#f92672">:</span> [];
 };
 
-module.exports.handleSqsMessages = async (event) =&gt; {
-  const dbTableName = process.env.DYNAMODB_TABLE;
-  const sqsQueueName = process.env.SQS_QUEUE_NAME;
-  const timestamp = new Date().getTime();
+<span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">handleSqsMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">event</span>) =&gt; {
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dbTableName</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">DYNAMODB_TABLE</span>;
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sqsQueueName</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">SQS_QUEUE_NAME</span>;
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">timestamp</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date().<span style="color:#a6e22e">getTime</span>();
 
-  if (event &amp;&amp; event.Records) {
-    console.log(&quot;Event Records: &quot;, event.Records);
-    let message = event.Records[0].Message;
-    console.log(&quot;Event received.&quot;);
-    console.log(`Event SNS Message: ${message}.`);
+  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">event</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Records</span>) {
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Event Records: &#34;</span>, <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Records</span>);
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">message</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Records</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">Message</span>;
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Event received.&#34;</span>);
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Event SNS Message: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">message</span><span style="color:#e6db74">}</span><span style="color:#e6db74">.`</span>);
   }
 
-  let canProcessMessages = true;
-  let queueUrl = await getQueueUrl(sqsQueueName);
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">canProcessMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">queueUrl</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getQueueUrl</span>(<span style="color:#a6e22e">sqsQueueName</span>);
 
-  if (!queueUrl) {
-    canProcessMessages = false;
+  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">queueUrl</span>) {
+    <span style="color:#a6e22e">canProcessMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
   }
 
-  while (canProcessMessages) {
-    let messages = await getMessages(queueUrl);
+  <span style="color:#66d9ef">while</span> (<span style="color:#a6e22e">canProcessMessages</span>) {
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">messages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getMessages</span>(<span style="color:#a6e22e">queueUrl</span>);
 
-    if (!messages || !messages.length) {
-      console.log(`No messages found in queue ${sqsQueueName}.`);
-      canProcessMessages = false;
-      return 0;
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">messages</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">messages</span>.<span style="color:#a6e22e">length</span>) {
+      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`No messages found in queue </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">sqsQueueName</span><span style="color:#e6db74">}</span><span style="color:#e6db74">.`</span>);
+      <span style="color:#a6e22e">canProcessMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
     }
 
-    for (let msg of messages) {
-      let msgId = msg.MessageId;
-      let msgBody = JSON.parse(msg.Body);
+    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">of</span> <span style="color:#a6e22e">messages</span>) {
+      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">msgId</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">MessageId</span>;
+      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">msgBody</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">parse</span>(<span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">Body</span>);
 
-      if (!(msgId &amp;&amp; msgBody)) {
-        // go to next message
-        continue;
+      <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(<span style="color:#a6e22e">msgId</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">msgBody</span>)) {
+        <span style="color:#75715e">// go to next message
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">continue</span>;
       }
       
-      console.log(`processing message (id: ${msgId})`);
+      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`processing message (id: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msgId</span><span style="color:#e6db74">}</span><span style="color:#e6db74">)`</span>);
 
-      try {
-        await db.put({
-          TableName: dbTableName,
-          Item: {
-            id: msgId,
-            VoteData: msgBody,
-            createdAt: timestamp,
-            updatedAt: timestamp
+      <span style="color:#66d9ef">try</span> {
+        <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">put</span>({
+          <span style="color:#a6e22e">TableName</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">dbTableName</span>,
+          <span style="color:#a6e22e">Item</span><span style="color:#f92672">:</span> {
+            <span style="color:#a6e22e">id</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">msgId</span>,
+            <span style="color:#a6e22e">VoteData</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">msgBody</span>,
+            <span style="color:#a6e22e">createdAt</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">timestamp</span>,
+            <span style="color:#a6e22e">updatedAt</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">timestamp</span>
           }
-        }).promise();
+        }).<span style="color:#a6e22e">promise</span>();
 
-        console.log(`DB PUT successful! Message Id: ${msgId}`);
-      } catch (err) {
-        console.error(`DB PUT failed! Message Id: ${msgId}. Error: ${err}`);
-        return 1;
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`DB PUT successful! Message Id: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msgId</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+      } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`DB PUT failed! Message Id: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msgId</span><span style="color:#e6db74">}</span><span style="color:#e6db74">. Error: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">err</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
       }
 
-      try {
-        await sqs.deleteMessage({
-          QueueUrl: queueUrl,
-          ReceiptHandle: msg.ReceiptHandle
-        }).promise();
+      <span style="color:#66d9ef">try</span> {
+        <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sqs</span>.<span style="color:#a6e22e">deleteMessage</span>({
+          <span style="color:#a6e22e">QueueUrl</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">queueUrl</span>,
+          <span style="color:#a6e22e">ReceiptHandle</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">ReceiptHandle</span>
+        }).<span style="color:#a6e22e">promise</span>();
 
-        console.log(`Message deleted from SQS Queue. Queue URL: ${queueUrl} | Message Receipt Handle: ${msg.ReceiptHandle}`);
-      } catch (err) {
-        console.error(`Message deletion FAILED. Message Receipt Handle: ${msg.ReceiptHandle}. Error: ${err}`);
-        return 1;
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Message deleted from SQS Queue. Queue URL: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">queueUrl</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> | Message Receipt Handle: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">ReceiptHandle</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+      } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`Message deletion FAILED. Message Receipt Handle: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">ReceiptHandle</span><span style="color:#e6db74">}</span><span style="color:#e6db74">. Error: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">err</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
       }
     }
   }
 
-  return 0;
+  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 };
-&quot;use strict&quot;;
-const AWS = require(&quot;aws-sdk&quot;);
-const sqs = new AWS.SQS({apiVersion: &quot;2012-11-05&quot;});
-const db = new AWS.DynamoDB.DocumentClient({apiVersion: &quot;2012-08-10&quot;});
+<span style="color:#e6db74">&#34;use strict&#34;</span>;
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AWS</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;aws-sdk&#34;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sqs</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">SQS</span>({<span style="color:#a6e22e">apiVersion</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2012-11-05&#34;</span>});
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">DynamoDB</span>.<span style="color:#a6e22e">DocumentClient</span>({<span style="color:#a6e22e">apiVersion</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2012-08-10&#34;</span>});
 
-AWS.config.update({region: &quot;us-east-1&quot;});
+<span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">update</span>({<span style="color:#a6e22e">region</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;us-east-1&#34;</span>});
 
-const getQueueUrl = async () =&gt; {
-  let queueUrlResponse = await sqs.getQueueUrl({
-    QueueName: process.env.SQS_QUEUE_NAME
-  }).promise();
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getQueueUrl</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () =&gt; {
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">queueUrlResponse</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sqs</span>.<span style="color:#a6e22e">getQueueUrl</span>({
+    <span style="color:#a6e22e">QueueName</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">SQS_QUEUE_NAME</span>
+  }).<span style="color:#a6e22e">promise</span>();
 
-  return queueUrlResponse.QueueUrl;
-};
-
-const getMessages = async (queueUrl) =&gt; {
-  let messagesResponse = await sqs.receiveMessage({
-    QueueUrl: queueUrl,
-    WaitTimeSeconds: 5,
-    MaxNumberOfMessages: 10
-  }).promise();
-
-  return messagesResponse &amp;&amp; messagesResponse.Messages
-    ? messagesResponse.Messages
-    : [];
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">queueUrlResponse</span>.<span style="color:#a6e22e">QueueUrl</span>;
 };
 
-module.exports.handleSqsMessages = async (event) =&gt; {
-  const dbTableName = process.env.DYNAMODB_TABLE;
-  const sqsQueueName = process.env.SQS_QUEUE_NAME;
-  const timestamp = new Date().getTime();
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">queueUrl</span>) =&gt; {
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">messagesResponse</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sqs</span>.<span style="color:#a6e22e">receiveMessage</span>({
+    <span style="color:#a6e22e">QueueUrl</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">queueUrl</span>,
+    <span style="color:#a6e22e">WaitTimeSeconds</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5</span>,
+    <span style="color:#a6e22e">MaxNumberOfMessages</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">10</span>
+  }).<span style="color:#a6e22e">promise</span>();
 
-  if (event &amp;&amp; event.Records) {
-    console.log(&quot;Event Records: &quot;, event.Records);
-    let message = event.Records[0].Message;
-    console.log(&quot;Event received.&quot;);
-    console.log(`Event SNS Message: ${message}.`);
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">messagesResponse</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">messagesResponse</span>.<span style="color:#a6e22e">Messages</span>
+    <span style="color:#f92672">?</span> <span style="color:#a6e22e">messagesResponse</span>.<span style="color:#a6e22e">Messages</span>
+    <span style="color:#f92672">:</span> [];
+};
+
+<span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">handleSqsMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">event</span>) =&gt; {
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dbTableName</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">DYNAMODB_TABLE</span>;
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sqsQueueName</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">SQS_QUEUE_NAME</span>;
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">timestamp</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date().<span style="color:#a6e22e">getTime</span>();
+
+  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">event</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Records</span>) {
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Event Records: &#34;</span>, <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Records</span>);
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">message</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Records</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">Message</span>;
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Event received.&#34;</span>);
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Event SNS Message: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">message</span><span style="color:#e6db74">}</span><span style="color:#e6db74">.`</span>);
   }
 
-  let canProcessMessages = true;
-  let queueUrl = await getQueueUrl(sqsQueueName);
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">canProcessMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">queueUrl</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getQueueUrl</span>(<span style="color:#a6e22e">sqsQueueName</span>);
 
-  if (!queueUrl) {
-    canProcessMessages = false;
+  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">queueUrl</span>) {
+    <span style="color:#a6e22e">canProcessMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
   }
 
-  while (canProcessMessages) {
-    let messages = await getMessages(queueUrl);
+  <span style="color:#66d9ef">while</span> (<span style="color:#a6e22e">canProcessMessages</span>) {
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">messages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getMessages</span>(<span style="color:#a6e22e">queueUrl</span>);
 
-    if (!messages || !messages.length) {
-      console.log(`No messages found in queue ${sqsQueueName}.`);
-      canProcessMessages = false;
-      return 0;
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">messages</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">messages</span>.<span style="color:#a6e22e">length</span>) {
+      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`No messages found in queue </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">sqsQueueName</span><span style="color:#e6db74">}</span><span style="color:#e6db74">.`</span>);
+      <span style="color:#a6e22e">canProcessMessages</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
     }
 
-    for (let msg of messages) {
-      let msgId = msg.MessageId;
-      let msgBody = JSON.parse(msg.Body);
+    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">of</span> <span style="color:#a6e22e">messages</span>) {
+      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">msgId</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">MessageId</span>;
+      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">msgBody</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">parse</span>(<span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">Body</span>);
 
-      if (!(msgId &amp;&amp; msgBody)) {
-        // go to next message
-        continue;
+      <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(<span style="color:#a6e22e">msgId</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">msgBody</span>)) {
+        <span style="color:#75715e">// go to next message
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">continue</span>;
       }
       
-      console.log(`processing message (id: ${msgId})`);
+      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`processing message (id: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msgId</span><span style="color:#e6db74">}</span><span style="color:#e6db74">)`</span>);
 
-      try {
-        await db.put({
-          TableName: dbTableName,
-          Item: {
-            id: msgId,
-            VoteData: msgBody,
-            createdAt: timestamp,
-            updatedAt: timestamp
+      <span style="color:#66d9ef">try</span> {
+        <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">put</span>({
+          <span style="color:#a6e22e">TableName</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">dbTableName</span>,
+          <span style="color:#a6e22e">Item</span><span style="color:#f92672">:</span> {
+            <span style="color:#a6e22e">id</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">msgId</span>,
+            <span style="color:#a6e22e">VoteData</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">msgBody</span>,
+            <span style="color:#a6e22e">createdAt</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">timestamp</span>,
+            <span style="color:#a6e22e">updatedAt</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">timestamp</span>
           }
-        }).promise();
+        }).<span style="color:#a6e22e">promise</span>();
 
-        console.log(`DB PUT successful! Message Id: ${msgId}`);
-      } catch (err) {
-        console.error(`DB PUT failed! Message Id: ${msgId}. Error: ${err}`);
-        return 1;
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`DB PUT successful! Message Id: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msgId</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+      } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`DB PUT failed! Message Id: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msgId</span><span style="color:#e6db74">}</span><span style="color:#e6db74">. Error: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">err</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
       }
 
-      try {
-        await sqs.deleteMessage({
-          QueueUrl: queueUrl,
-          ReceiptHandle: msg.ReceiptHandle
-        }).promise();
+      <span style="color:#66d9ef">try</span> {
+        <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sqs</span>.<span style="color:#a6e22e">deleteMessage</span>({
+          <span style="color:#a6e22e">QueueUrl</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">queueUrl</span>,
+          <span style="color:#a6e22e">ReceiptHandle</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">ReceiptHandle</span>
+        }).<span style="color:#a6e22e">promise</span>();
 
-        console.log(`Message deleted from SQS Queue. Queue URL: ${queueUrl} | Message Receipt Handle: ${msg.ReceiptHandle}`);
-      } catch (err) {
-        console.error(`Message deletion FAILED. Message Receipt Handle: ${msg.ReceiptHandle}. Error: ${err}`);
-        return 1;
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Message deleted from SQS Queue. Queue URL: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">queueUrl</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> | Message Receipt Handle: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">ReceiptHandle</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+      } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`Message deletion FAILED. Message Receipt Handle: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">msg</span>.<span style="color:#a6e22e">ReceiptHandle</span><span style="color:#e6db74">}</span><span style="color:#e6db74">. Error: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">err</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
       }
     }
   }
 
-  return 0;
+  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 };
 
-</code></pre>
-
-<p>So what are we working with here? We&rsquo;ve got a couple &ldquo;helper&rdquo; functions at the top for getting the SQS queue URL and retrieving messages from this queue. Then, we&rsquo;ve got the main function. In there, we&rsquo;re really only doing a few things: logging the event that triggered this function (using <code>console.log</code>), collecting messages from the SQS queue, adding all messages found to our database, then deleting all the messages we&rsquo;ve processed from the SQS queue. Let&rsquo;s go over it a little more in detail.</p>
-
+</code></pre></div><p>So what are we working with here? We&rsquo;ve got a couple &ldquo;helper&rdquo; functions at the top for getting the SQS queue URL and retrieving messages from this queue. Then, we&rsquo;ve got the main function. In there, we&rsquo;re really only doing a few things: logging the event that triggered this function (using <code>console.log</code>), collecting messages from the SQS queue, adding all messages found to our database, then deleting all the messages we&rsquo;ve processed from the SQS queue. Let&rsquo;s go over it a little more in detail.</p>
 <p>First we first collect our databse table name and SQS queue name from our environment variables. You&rsquo;ll notice the <code>DYNAMODB_TABLE</code> environment variable is a new one. We&rsquo;ve added that to the <code>serverless.yml</code> file, which well see in a moment. We also establish a timestamp which we can use later on in the function.</p>
-
 <p>Next, we log the event <code>Records</code> if any are found. This is only used for tracking purposes. By adding a few of these <code>console.log</code> statements throughout our function, we are then able to look into our logs in AWS CloudWatch to see a detailed accounting of what happened when this function ran.  The <code>Records</code> object will exist only if the function was triggered by an SNS publish.</p>
-
 <p>Now we collect our SQS queue URL and begin processing messages. Assuming a queue URL was returned, we&rsquo;ll establish a loop which only closes when we decide we can no longer process messages (<code>canProcessMessages=false</code>). In the loop, we grab the messages using our <code>getMessages</code> function. If this returns no messages, we stop the loop and the function ends.  However, if it returns some messages we process each one of them. This means collecting the <code>MessageId</code> and the message <code>Body</code>, then running a <code>PUT</code> to our dynamoDB table. The format of the object we pass to this <code>db.put</code> is important. You can find more info about this formatting in the <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#put-property">nodejs aws-sdk docs</a>.</p>
-
 <p>If any errors were hit on our way to this point, we&rsquo;ve logged them to AWS CloudWatch and returned a non-zero value, ending the function.  But, if we made it this far without errors, we delete the message from our SQS queue and then we&rsquo;re done!</p>
-
 <h4 id="the-updated-yaml-file">The updated yaml file</h4>
-
 <p>So, now comes the second major part of this segment of our pipeline: the <code>serverless.yml</code> file. Here&rsquo;s the updated version. Take a quick read.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">service</span>: <span style="color:#ae81ff">voting-app</span>
 
-<pre><code class="language-yaml">service: voting-app
+<span style="color:#f92672">provider</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws</span>
+  <span style="color:#f92672">runtime</span>: <span style="color:#ae81ff">nodejs8.10</span>
+  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">${opt:stage, &#39;dev&#39;}</span>
+  <span style="color:#f92672">region</span>: <span style="color:#ae81ff">${opt:region, &#39;us-east-1&#39;}</span>
+  <span style="color:#f92672">environment</span>:
+    <span style="color:#f92672">DYNAMODB_TABLE</span>: <span style="color:#ae81ff">${file(../voting-db/serverless.yml):service}-${self:provider.stage}-table</span>
+    <span style="color:#f92672">SQS_QUEUE_NAME</span>: <span style="color:#ae81ff">${self:service}-${self:provider.stage}-queue</span>
+    <span style="color:#f92672">SNS_TOPIC</span>: <span style="color:#ae81ff">${self:service}-${self:provider.stage}-topic</span>
+  <span style="color:#f92672">iamRoleStatements</span>:
+    - <span style="color:#f92672">Effect</span>: <span style="color:#ae81ff">Allow</span>
+      <span style="color:#f92672">Action</span>:
+        - <span style="color:#ae81ff">SQS:*</span>
+      <span style="color:#f92672">Resource</span>: {<span style="color:#e6db74">&#34;Fn::Join&#34;</span> : [<span style="color:#e6db74">&#34;&#34;</span>, [<span style="color:#e6db74">&#34;arn:aws:sqs:${self:provider.region}:&#34;</span>, {<span style="color:#e6db74">&#34;Ref&#34;</span>:<span style="color:#e6db74">&#34;AWS::AccountId&#34;</span>}, <span style="color:#e6db74">&#34;:${self:provider.environment.SQS_QUEUE_NAME}&#34;</span> ] ] }
+    - <span style="color:#f92672">Effect</span>: <span style="color:#ae81ff">Allow</span>
+      <span style="color:#f92672">Action</span>:
+        - <span style="color:#ae81ff">dynamoDB:*</span>
+      <span style="color:#f92672">Resource</span>: {<span style="color:#e6db74">&#34;Fn::Join&#34;</span> : [<span style="color:#e6db74">&#34;&#34;</span>, [<span style="color:#e6db74">&#34;arn:aws:dynamodb:${self:provider.region}:&#34;</span>, {<span style="color:#e6db74">&#34;Ref&#34;</span>:<span style="color:#e6db74">&#34;AWS::AccountId&#34;</span>}, <span style="color:#e6db74">&#34;:table/${self:provider.environment.DYNAMODB_TABLE}&#34;</span> ] ] }
+    - <span style="color:#f92672">Effect</span>: <span style="color:#ae81ff">Allow</span>
+      <span style="color:#f92672">Action</span>:
+        - <span style="color:#ae81ff">SNS:*</span>
+      <span style="color:#f92672">Resource</span>: {<span style="color:#e6db74">&#34;Fn::Join&#34;</span>:[<span style="color:#e6db74">&#34;&#34;</span>, [<span style="color:#e6db74">&#34;arn:aws:sns:${self:provider.region}:&#34;</span>, {<span style="color:#e6db74">&#34;Ref&#34;</span>:<span style="color:#e6db74">&#34;AWS::AccountId&#34;</span>}, <span style="color:#e6db74">&#34;:${self:provider.environment.SNS_TOPIC}&#34;</span>]]}
 
-provider:
-  name: aws
-  runtime: nodejs8.10
-  stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'us-east-1'}
-  environment:
-    DYNAMODB_TABLE: ${file(../voting-db/serverless.yml):service}-${self:provider.stage}-table
-    SQS_QUEUE_NAME: ${self:service}-${self:provider.stage}-queue
-    SNS_TOPIC: ${self:service}-${self:provider.stage}-topic
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - SQS:*
-      Resource: {&quot;Fn::Join&quot; : [&quot;&quot;, [&quot;arn:aws:sqs:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SQS_QUEUE_NAME}&quot; ] ] }
-    - Effect: Allow
-      Action:
-        - dynamoDB:*
-      Resource: {&quot;Fn::Join&quot; : [&quot;&quot;, [&quot;arn:aws:dynamodb:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:table/${self:provider.environment.DYNAMODB_TABLE}&quot; ] ] }
-    - Effect: Allow
-      Action:
-        - SNS:*
-      Resource: {&quot;Fn::Join&quot;:[&quot;&quot;, [&quot;arn:aws:sns:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SNS_TOPIC}&quot;]]}
+<span style="color:#f92672">functions</span>:
+  <span style="color:#f92672">post-vote</span>:
+    <span style="color:#f92672">handler</span>: <span style="color:#ae81ff">post-vote.postVote</span>
+    <span style="color:#f92672">events</span>:
+      - <span style="color:#f92672">http</span>:
+          <span style="color:#f92672">path</span>: <span style="color:#ae81ff">vote</span>
+          <span style="color:#f92672">method</span>: <span style="color:#ae81ff">post</span>
+    <span style="color:#f92672">environment</span>:
+      <span style="color:#f92672">SNS_TOPIC_ARN</span>: {<span style="color:#e6db74">&#34;Fn::Join&#34;</span>:[<span style="color:#e6db74">&#34;&#34;</span>, [<span style="color:#e6db74">&#34;arn:aws:sns:${self:provider.region}:&#34;</span>, {<span style="color:#e6db74">&#34;Ref&#34;</span>:<span style="color:#e6db74">&#34;AWS::AccountId&#34;</span>}, <span style="color:#e6db74">&#34;:${self:provider.environment.SNS_TOPIC}&#34;</span>]]}
+  <span style="color:#f92672">handle-votes</span>:
+    <span style="color:#f92672">handler</span>: <span style="color:#ae81ff">handle-votes.handleSqsMessages</span>
+    <span style="color:#f92672">events</span>:
+      - <span style="color:#f92672">schedule</span>: <span style="color:#ae81ff">rate(1 minute)</span>
+      - <span style="color:#f92672">sns</span>: <span style="color:#ae81ff">${self:provider.environment.SNS_TOPIC}</span>
 
-functions:
-  post-vote:
-    handler: post-vote.postVote
-    events:
-      - http:
-          path: vote
-          method: post
-    environment:
-      SNS_TOPIC_ARN: {&quot;Fn::Join&quot;:[&quot;&quot;, [&quot;arn:aws:sns:${self:provider.region}:&quot;, {&quot;Ref&quot;:&quot;AWS::AccountId&quot;}, &quot;:${self:provider.environment.SNS_TOPIC}&quot;]]}
-  handle-votes:
-    handler: handle-votes.handleSqsMessages
-    events:
-      - schedule: rate(1 minute)
-      - sns: ${self:provider.environment.SNS_TOPIC}
-
-resources:
-  Resources:
-    VotesQueue:
-      Type: 'AWS::SQS::Queue'
-      Properties:
-        QueueName: ${self:provider.environment.SQS_QUEUE_NAME}
-</code></pre>
-
-<p>The new additions to point out here are not many. We&rsquo;ve added the new environment variable, <code>DYNAMODB_TABLE</code>. We added a new <code>iamRoleStatement</code> which allows our functions access to dynamoDB.  And we added a new <code>handle-votes</code> section in our <code>functions</code>. This is the interesting bit!  This function has 2 <code>events</code> set up for it.  One of these events is a <code>schedule</code> which will trigger the function every &ldquo;1 minute&rdquo;.  This is probably excessive, and could be increased to a larger amount of time in production.  The idea with this schedule is just to have the function run some &ldquo;cleanup&rdquo; every now and then to make sure that all of our SQS messages get handled.  However, we should be able to rely on the next event to do most of the work here.  The <code>sns</code> event will subscribe our <code>handle-votes</code> function to a specific SNS Topic, which we&rsquo;ve provided by referencing an environment variable in this file.  Since the function is subscribed, it will be triggered when our <em>first</em> function (<code>post-vote</code>) publishes a message to this topic.</p>
-
+<span style="color:#f92672">resources</span>:
+  <span style="color:#f92672">Resources</span>:
+    <span style="color:#f92672">VotesQueue</span>:
+      <span style="color:#f92672">Type</span>: <span style="color:#e6db74">&#39;AWS::SQS::Queue&#39;</span>
+      <span style="color:#f92672">Properties</span>:
+        <span style="color:#f92672">QueueName</span>: <span style="color:#ae81ff">${self:provider.environment.SQS_QUEUE_NAME}</span>
+</code></pre></div><p>The new additions to point out here are not many. We&rsquo;ve added the new environment variable, <code>DYNAMODB_TABLE</code>. We added a new <code>iamRoleStatement</code> which allows our functions access to dynamoDB.  And we added a new <code>handle-votes</code> section in our <code>functions</code>. This is the interesting bit!  This function has 2 <code>events</code> set up for it.  One of these events is a <code>schedule</code> which will trigger the function every &ldquo;1 minute&rdquo;.  This is probably excessive, and could be increased to a larger amount of time in production.  The idea with this schedule is just to have the function run some &ldquo;cleanup&rdquo; every now and then to make sure that all of our SQS messages get handled.  However, we should be able to rely on the next event to do most of the work here.  The <code>sns</code> event will subscribe our <code>handle-votes</code> function to a specific SNS Topic, which we&rsquo;ve provided by referencing an environment variable in this file.  Since the function is subscribed, it will be triggered when our <em>first</em> function (<code>post-vote</code>) publishes a message to this topic.</p>
 <p>That&rsquo;s all for this file!  But what about DynamoDB?  We aren&rsquo;t creating that resource here, are we?  Correct!  The reason we don&rsquo;t include databases here is that, in a production environment, databases usually exist already or at least won&rsquo;t be changed very often.  This serverless file is designed so that you can create, update, and destroy all of these resources and services at will. This isn&rsquo;t the approach you&rsquo;d want to take with your data, however.</p>
-
 <p>If you did want to create a Dynamo database and table using serverless, maybe for testing purposes, you can still do that!  Serverless has the power!  The best plan here would be to create a new <code>serverless.yml</code> file somewhere <strong>outside</strong> of your <code>voting-functions</code> directory.  The idea is to have a different area where you can run your <code>serverless</code> command in the terminal, so that when you update your Lambda functions and other resources you won&rsquo;t also try to re-deploy your DynamoDB table when you update these functions using <code>serverless deploy</code>.  So, what would that new file look like for creating your database?  Here you go:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">service</span>: <span style="color:#ae81ff">voting-db</span>
 
-<pre><code class="language-yaml">service: voting-db
+<span style="color:#f92672">custom</span>:
+  <span style="color:#f92672">tableName</span>: <span style="color:#ae81ff">${self:service}-${self:provider.stage}-table</span>
 
-custom:
-  tableName: ${self:service}-${self:provider.stage}-table
+<span style="color:#f92672">provider</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws</span>
+  <span style="color:#f92672">runtime</span>: <span style="color:#ae81ff">nodejs8.10</span>
+  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">${opt:stage, &#39;dev&#39;}</span>
+  <span style="color:#f92672">region</span>: <span style="color:#ae81ff">${opt:region, &#39;us-east-1&#39;}</span>
 
-provider:
-  name: aws
-  runtime: nodejs8.10
-  stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'us-east-1'}
-
-resources:
-  Resources:
-    VotesDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:custom.tableName}
-</code></pre>
-
-<p>A few sections here probably look familiar to you.  The resources section creates our resources and in it we&rsquo;ve established our <code>VotesDynamoDbTable</code>.  Tables in DynamoDB require at least 1 <code>Key</code> to serve as the primary key.  This is created by first establishing an <code>AttributeDefinition</code> and then creating our <code>KeySchema</code> which references the name of our newly created Attribute.  We then provide the <code>TableName</code> at the end.  Check out the <a href="https://github.com/serverless/examples/blob/master/aws-node-rest-api-with-dynamodb/serverless.yml">serverless examples repo</a> for more examples of using dynamodb with the serverless framework.</p>
-
+<span style="color:#f92672">resources</span>:
+  <span style="color:#f92672">Resources</span>:
+    <span style="color:#f92672">VotesDynamoDbTable</span>:
+      <span style="color:#f92672">Type</span>: <span style="color:#e6db74">&#39;AWS::DynamoDB::Table&#39;</span>
+      <span style="color:#f92672">DeletionPolicy</span>: <span style="color:#ae81ff">Retain</span>
+      <span style="color:#f92672">Properties</span>:
+        <span style="color:#f92672">AttributeDefinitions</span>:
+          - <span style="color:#f92672">AttributeName</span>: <span style="color:#ae81ff">id</span>
+            <span style="color:#f92672">AttributeType</span>: <span style="color:#ae81ff">S</span>
+        <span style="color:#f92672">KeySchema</span>:
+          - <span style="color:#f92672">AttributeName</span>: <span style="color:#ae81ff">id</span>
+            <span style="color:#f92672">KeyType</span>: <span style="color:#ae81ff">HASH</span>
+        <span style="color:#f92672">ProvisionedThroughput</span>:
+          <span style="color:#f92672">ReadCapacityUnits</span>: <span style="color:#ae81ff">1</span>
+          <span style="color:#f92672">WriteCapacityUnits</span>: <span style="color:#ae81ff">1</span>
+        <span style="color:#f92672">TableName</span>: <span style="color:#ae81ff">${self:custom.tableName}</span>
+</code></pre></div><p>A few sections here probably look familiar to you.  The resources section creates our resources and in it we&rsquo;ve established our <code>VotesDynamoDbTable</code>.  Tables in DynamoDB require at least 1 <code>Key</code> to serve as the primary key.  This is created by first establishing an <code>AttributeDefinition</code> and then creating our <code>KeySchema</code> which references the name of our newly created Attribute.  We then provide the <code>TableName</code> at the end.  Check out the <a href="https://github.com/serverless/examples/blob/master/aws-node-rest-api-with-dynamodb/serverless.yml">serverless examples repo</a> for more examples of using dynamodb with the serverless framework.</p>
 <p>We also use a new section here called <code>custom</code>.  This is a good area for you to define local variables for your file. Since this new serverless service doesn&rsquo;t need to use the dynamoDB table name anywhere else, we can just put it in this <code>custom</code> section for reference within this file.</p>
-
 <p>Now, you can run <code>serverless deploy</code> in this directory to create this DynamoDB table!</p>
-
 <h4 id="other-thoughts">Other thoughts</h4>
-
 <p>One thought you may have had while reading this is:</p>
-
 <blockquote>
 <p>What if we fail to delete the SQS message after processing it? Wouldn&rsquo;t we end up adding a duplicate to the database later on?</p>
 </blockquote>
-
 <p>No. The <code>MessageId</code> value provided by each message from our SQS queue will remain the same if we fail to delete that item. We will, indeed, end up collecting this message again later on, but since we&rsquo;re using this value as our primary key in the DynamoDB table we&rsquo;d avoid duplicating it.  When you try to put a record in a DynamoDB table and the record&rsquo;s primary key already exists, DyanmoDB will wimply simply <a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutItem.html">overwrite the old item with the new</a> one. Since the data from our SQS message will not have changed, this would be alright with us!</p>
-
 <h4 id="finishing-up">Finishing Up</h4>
-
-<p>We have now successfully built our pipeline!  To sum it all up, we now have:
-* An API endpoint where a client can submit voting data.
-* A serverless Lambda function which will accept data from this endpoint, add it to a SQS queue, and publish an SNS message.
-* Another serverless Lambda function which will trigger when a message is published to this SNS topic OR on a timed schedule. This function will collect votes from the SQS queue, add them to a DynamoDB table, and then delete them from the queue.
-* A DynamoDB table to store the voting data.</p>
-
+<p>We have now successfully built our pipeline!  To sum it all up, we now have:</p>
+<ul>
+<li>An API endpoint where a client can submit voting data.</li>
+<li>A serverless Lambda function which will accept data from this endpoint, add it to a SQS queue, and publish an SNS message.</li>
+<li>Another serverless Lambda function which will trigger when a message is published to this SNS topic OR on a timed schedule. This function will collect votes from the SQS queue, add them to a DynamoDB table, and then delete them from the queue.</li>
+<li>A DynamoDB table to store the voting data.</li>
+</ul>
 <p>This pipeline is extremely scalable and can be created, updated, and deleted at the push of a button! You can try it now by cloning <a href="https://github.com/mct-dev/voting-app">this repo</a> and running <code>npm deploy</code>. To remove all of these resources from AWS, just run <code>npm run remove</code>.  Keep in mind that you&rsquo;ll need to be authenticated to your AWS account for any of this to work.  You can find out how to do this <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html">here</a>.</p>
-
 <p>One important note: if you&rsquo;re creating your database with the serverless template I&rsquo;ve shown above, you won&rsquo;t be able to remove it with a <code>serverless remove</code> command.  This is for all the same &ldquo;data integrity&rdquo; and safety reasons as we mentioned before.  AWS won&rsquo;t let you destroy database things without you explicitly telling it to do so.</p>
-
 <p>And with that, I think that&rsquo;ll do it for now.  If you&rsquo;re still reading, I appreciate you sticking it out.  Be sure to check in for the next one.  I&rsquo;ll make sure we build something even cooler. :)</p>
 
     </div>
 
-    
+    <div class="post-copyright">
+            
+           
+            <p class="copyright-item">
+                    <span>Words:</span>
+                   <span>2072</span>
+            </p>
+            
+            <p class="copyright-item">
+                
+                <span>Share:</span>
+                <span>
+
+      
+        <a href="//twitter.com/share?url=https%3a%2f%2fmikectobias.com%2fposts%2fhandling-sqs-messages-with-serverless%2f&amp;text=Handling%20SQS%20Messages%20with%20Serverless%20Functions&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="iconfont icon-twitter"></i>
+        </a>
+        
+      
+      
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fmikectobias.com%2fposts%2fhandling-sqs-messages-with-serverless%2f" target="_blank" title="Share on Facebook">
+          <i class="iconfont icon-facebook"></i>
+        </a>
+        
+      
+      
+        <a href="//reddit.com/submit?url=https%3a%2f%2fmikectobias.com%2fposts%2fhandling-sqs-messages-with-serverless%2f&amp;title=Handling%20SQS%20Messages%20with%20Serverless%20Functions" target="_blank" title="Share on Reddit">
+          <i class="iconfont icon-reddit"></i>
+        </a>
+        
+      
+      
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fmikectobias.com%2fposts%2fhandling-sqs-messages-with-serverless%2f&amp;title=Handling%20SQS%20Messages%20with%20Serverless%20Functions" target="_blank" title="Share on LinkedIn">
+          <i class="iconfont icon-linkedin"></i>
+        </a>
+        
+      
+      
+        
+      
+        <a href="//news.ycombinator.com/submitlink?u=https%3a%2f%2fmikectobias.com%2fposts%2fhandling-sqs-messages-with-serverless%2f&amp;description=Handling%20SQS%20Messages%20with%20Serverless%20Functions" target="_blank" title="Share on Hacker News">
+          <i class="iconfont icon-ycombinator"></i>
+        </a>
+        
+        
+      
+
+          
+        <a href="//www.tumblr.com/widgets/share/tool?canonicalUrl=https%3a%2f%2fmikectobias.com%2fposts%2fhandling-sqs-messages-with-serverless%2f&amp;title=Handling%20SQS%20Messages%20with%20Serverless%20Functions" target="_blank" title="Share on Tumblr">
+            <i class="iconfont icon-tumblr"></i>
+          </a>
+          
+
+          
+
+          
+
+          
+</span>
+            </p>
+                
+
+            
+    </div>
 
   
     <div class="post-tags">
         
         <section>
                 <a href="javascript:window.history.back();">Back</a></span> · 
-                <span><a href="https://mct-dev.github.io">Home</a></span>
+                <span><a href="https://mikectobias.com">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav">
-        
-        <a href="https://mct-dev.github.io/posts/simple-api-endpoints-with-serverless-and-lambda/" class="prev" rel="prev" title="Simple API Endpoints with Serverless and Lambda"><i class="iconfont icon-dajiantou"></i>&nbsp;Simple API Endpoints with Serverless and Lambda</a>
-         
-        
-    </div>
+    
 
     <div class="post-comment">
           
@@ -539,7 +569,7 @@ resources:
         &copy;
         
          
-            <span class="author" itemprop="copyrightHolder"><a href="https://mct-dev.github.io">Mike Tobias</a></span>
+            <span class="author" itemprop="copyrightHolder"><a href="https://mikectobias.com">Mike Tobias</a></span>
          
 
 		  
